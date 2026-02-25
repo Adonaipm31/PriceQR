@@ -1,0 +1,44 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // ✅ Plugin de Google Services (Firebase)
+        classpath 'com.google.gms:google-services:4.4.2'
+
+        // ✅ Plugin de Android Gradle (moderno, estable con Flutter 3.24+)
+        classpath 'com.android.tools.build:gradle:8.6.1'
+
+        // ✅ Kotlin 2.1.0 (compatible con AGP 8.6.x)
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+// ✅ Carpeta build global
+rootProject.buildDir = '../build'
+
+// ✅ Configuración global limpia y moderna
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.evaluationDependsOn(':app')
+
+    // Kotlin moderno
+    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
+}
+
+// ✅ Tarea de limpieza global
+tasks.register("clean", Delete) {
+    delete rootProject.layout.buildDirectory
+}
