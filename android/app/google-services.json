@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "968736313295",
-    "project_id": "priceqr",
-    "storage_bucket": "priceqr.firebasestorage.app"
+    "project_number": "1070422345655",
+    "project_id": "priceqr-adonai",
+    "storage_bucket": "priceqr-adonai.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:968736313295:android:57149b581a36219b4e0cba",
+        "mobilesdk_app_id": "1:1070422345655:android:b2363cef5f15bb4590ca32",
         "android_client_info": {
           "package_name": "com.SynergyLabs.gatedcommunity"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAo_920ObGG6eOLvCPdR5U7fmtC6XxD2K0"
+          "current_key": "AIzaSyBtCc_tTTbIBygBOEXj0m0qGKWOpiLvrqg"
         }
       ],
       "services": {
