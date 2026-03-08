@@ -82,7 +82,7 @@ dependencies:
   url_launcher_web: 2.4.1
   url_launcher_windows: 3.1.4
   mobile_scanner: ^7.1.2
-
+  permission_handler: ^11.3.0
   firebase_core: ^3.15.2
   cloud_firestore: ^5.6.2
   firebase_auth: ^5.3.3

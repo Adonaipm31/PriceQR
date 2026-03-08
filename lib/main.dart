@@ -192,7 +192,7 @@ class _MyAppState extends State<MyApp> {
       ),
       themeMode: _themeMode,
       routerConfig: _router,
-      // ✅ CONFIGURACIÓN ESPECÍFICA PARA ANDROID
+      // CONFIGURACIÓN ESPECÍFICA PARA ANDROID
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(
