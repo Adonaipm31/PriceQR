@@ -1,4 +1,6 @@
 import '/components/nav_bar_invitado_widget.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -24,10 +26,12 @@ class _ProfileUserInvitadoWidgetState extends State<ProfileUserInvitadoWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  void initState() {
-    super.initState();
-    _model = createModel(context, () => ProfileUserInvitadoModel());
-  }
+void initState() {
+  super.initState();
+  _model = createModel(context, () => ProfileUserInvitadoModel());
+
+  loadNotificationSettings();
+}
 
   @override
   void dispose() {
@@ -35,45 +39,126 @@ class _ProfileUserInvitadoWidgetState extends State<ProfileUserInvitadoWidget> {
     super.dispose();
   }
 
-  /// NOTIFICATION SETTINGS
-  void _showNotificationSettings() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                "Notification Settings",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              SwitchListTile(
-                title: const Text("Event Notifications"),
-                value: true,
-                onChanged: (v) {},
-              ),
-              SwitchListTile(
-                title: const Text("Promotions"),
-                value: false,
-                onChanged: (v) {},
-              ),
-              SwitchListTile(
-                title: const Text("App Updates"),
-                value: true,
-                onChanged: (v) {},
-              ),
-            ],
-          ),
-        );
-      },
+// VARIABLES DE ESTADO
+bool eventNotifications = false;
+bool promotions = false;
+bool appUpdates = false;
+
+// CARGAR CONFIGURACION GUARDADA
+Future<void> loadNotificationSettings() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  setState(() {
+    eventNotifications = prefs.getBool('eventNotifications') ?? false;
+    promotions = prefs.getBool('promotions') ?? false;
+    appUpdates = prefs.getBool('appUpdates') ?? false;
+  });
+}
+
+// GUARDAR CONFIGURACION
+Future<void> saveSettings() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.setBool('eventNotifications', eventNotifications);
+  await prefs.setBool('promotions', promotions);
+  await prefs.setBool('appUpdates', appUpdates);
+}
+
+// PEDIR PERMISO DE NOTIFICACIONES
+Future<void> requestNotificationPermission() async {
+  var status = await Permission.notification.request();
+
+  if (status.isGranted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Notifications enabled")),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Notification permission denied")),
     );
   }
+}
+
+/// NOTIFICATION SETTINGS FUNCIONAL
+void _showNotificationSettings() {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setModalState) {
+          return Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                const Text(
+                  "Notification Settings",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                SwitchListTile(
+                  title: const Text("Event Notifications"),
+                  value: eventNotifications,
+                  onChanged: (v) async {
+
+                    if (v) {
+                      await requestNotificationPermission();
+                    }
+
+                    setModalState(() {
+                      eventNotifications = v;
+                    });
+
+                    setState(() {});
+                    saveSettings();
+                  },
+                ),
+
+                SwitchListTile(
+                  title: const Text("Promotions"),
+                  value: promotions,
+                  onChanged: (v) {
+
+                    setModalState(() {
+                      promotions = v;
+                    });
+
+                    setState(() {});
+                    saveSettings();
+                  },
+                ),
+
+                SwitchListTile(
+                  title: const Text("App Updates"),
+                  value: appUpdates,
+                  onChanged: (v) {
+
+                    setModalState(() {
+                      appUpdates = v;
+                    });
+
+                    setState(() {});
+                    saveSettings();
+                  },
+                ),
+
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
 
   /// ABOUT APP
   void _showAboutApp() {
