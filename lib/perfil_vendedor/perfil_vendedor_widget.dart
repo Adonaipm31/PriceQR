@@ -12,7 +12,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 class PerfilVendedorWidget extends StatefulWidget {
   const PerfilVendedorWidget({super.key});
 
-  // ✅ AGREGAR ESTAS CONSTANTES PARA LA RUTA
   static String routeName = 'PerfilVendedor';
   static String routePath = '/perfilVendedor';
 
@@ -25,51 +24,48 @@ class _PerfilVendedorWidgetState extends State<PerfilVendedorWidget> {
 
   String nombre = '';
   String correo = '';
-  /* String ciudad = ''; */
+
   bool cargando = true;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
- @override
-void initState() {
-  super.initState();
-  _model = createModel(context, () => PerfilVendedorModel());
-  _cargarDatosVendedor();
-}
-
-Future<void> _cargarDatosVendedor() async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user == null) {
-    setState(() => cargando = false);
-    return;
+  @override
+  void initState() {
+    super.initState();
+    _model = createModel(context, () => PerfilVendedorModel());
+    _cargarDatos();
   }
 
-  try {
-    final doc = await FirebaseFirestore.instance
-        .collection('vendedores')
-        .doc(user.uid)
-        .get();
+  Future<void> _cargarDatos() async {
+    final user = FirebaseAuth.instance.currentUser;
 
-    if (doc.exists && doc.data() != null) {
-      final data = doc.data()!;
-      setState(() {
-        nombre = data['nombre'] ?? 'Vendedor';
-        correo = data['correo'] ?? user.email ?? 'Correo no disponible';
-      });
-    } else {
-      // Si no existe el documento
-      setState(() {
-        nombre = 'Vendedor no encontrado';
-        correo = user.email ?? 'Correo no disponible';
-      });
+    if (user == null) {
+      setState(() => cargando = false);
+      return;
     }
-  } catch (e) {
-    print('❌ Error al cargar datos del vendedor: $e');
-  } finally {
-    setState(() => cargando = false);
-  }
-}
 
+    try {
+      final vendedorDoc = await FirebaseFirestore.instance
+          .collection('vendedores')
+          .doc(user.uid)
+          .get();
+
+      if (vendedorDoc.exists && vendedorDoc.data() != null) {
+        final data = vendedorDoc.data()!;
+        nombre = data['nombre'] ?? 'Vendedor';
+        correo = data['correo'] ?? user.email ?? '';
+      } else {
+        nombre = 'Vendedor';
+        correo = user.email ?? '';
+      }
+    } catch (e) {
+      print("Error cargando datos: $e");
+    }
+
+    setState(() {
+      cargando = false;
+    });
+  }
 
   @override
   void dispose() {
@@ -81,458 +77,266 @@ Future<void> _cargarDatosVendedor() async {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-      appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Perfil Vendedor',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
-                fontFamily: 'Karla',
-                color: FlutterFlowTheme.of(context).primaryText,
-                fontSize: 22.0,
-                letterSpacing: 0.0,
-              ),
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
-            child: InkWell(
-              onTap: () {
-                context.pushNamed('EditarPerfilVendedorWidget');
-              },
-              child: Icon(
-                Icons.edit_outlined,
-                color: FlutterFlowTheme.of(context).primaryText,
-                size: 24.0,
-              ),
-            ),
-          ),
-        ],
-        centerTitle: false,
-        elevation: 0.0,
-      ),
+      backgroundColor: const Color(0xFFF5F6FA),
       body: SafeArea(
-        top: true,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header con información del usuario
-              
-             
-Padding(
-  padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
-  child: Row(
-    children: [
-      Container(
-        width: 80.0,
-        height: 80.0,
-        decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).alternate,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: FlutterFlowTheme.of(context).primary,
-            width: 2.0,
-          ),
-        ),
-        child: Icon(
-          Icons.person,
-          color: FlutterFlowTheme.of(context).secondaryText,
-          size: 40.0,
-        ),
-      ),
-      Expanded(
-        child: Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (cargando)
-                const Center(child: CircularProgressIndicator())
-              else ...[
-                Text(
-                  nombre.isNotEmpty ? nombre : 'Nombre no disponible',
-                  style: FlutterFlowTheme.of(context).bodyLarge.override(
-                        fontFamily: 'Karla',
-                        letterSpacing: 0.0,
-                        fontWeight: FontWeight.bold,
+        child: cargando
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+
+                    /// HEADER PROFESIONAL
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.only(top: 40, bottom: 40),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF3A7BD5),
+                            Color(0xFF00D2FF),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(40),
+                          bottomRight: Radius.circular(40),
+                        ),
                       ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                  child: Text(
-                    correo.isNotEmpty ? correo : 'Correo no disponible',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          fontFamily: 'Karla',
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    ],
-  ),
-),
+                      child: Column(
+                        children: [
 
-              // Separador
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
-                child: Divider(
-                  height: 1.0,
-                  thickness: 1.0,
-                  color: FlutterFlowTheme.of(context).alternate,
-                ),
-              ),
-
-              // QR del catálogo
-              
-Padding(
-  padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Center(
-        child: Text(
-          'QR de mi catálogo de productos',
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
-                fontFamily: 'Karla',
-                letterSpacing: 0.0,
-              ),
-        ),
-      ),
-      Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-        child: InkWell(
-          onTap: () {
-            // ✅ NAVEGACIÓN AL GENERAR QR
-            context.pushNamed(GenerarQrWidget.routeName);
-          },
-          child: Container(
-            width: double.infinity,
-            height: 200.0,
-            decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).primaryBackground,
-              borderRadius: BorderRadius.circular(12.0),
-              border: Border.all(
-                color: FlutterFlowTheme.of(context).alternate,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 4,
-                  color: Color(0x33000000),
-                  offset: Offset(0, 2),
-                )
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.qr_code_2,
-                  color: FlutterFlowTheme.of(context).secondaryText,
-                  size: 80.0,
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
-                  child: Text(
-                    'Código QR',
-                    style: FlutterFlowTheme.of(context)
-                        .bodyMedium
-                        .override(
-                          fontFamily: 'Karla',
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 16.0, 0.0),
-                  child: Text(
-                    'Toca aquí para generar y ver tu código QR',
-                    textAlign: TextAlign.center,
-                    style: FlutterFlowTheme.of(context)
-                        .bodySmall
-                        .override(
-                          fontFamily: 'Karla',
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                ),
-                SizedBox(height: 8),
-                // ✅ INDICADOR VISUAL DE QUE ES CLICKEABLE
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'Toca para ver QR',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: FlutterFlowTheme.of(context).primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ],
-  ),
-),
-
-              // Separador
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
-                child: Divider(
-                  height: 1.0,
-                  thickness: 1.0,
-                  color: FlutterFlowTheme.of(context).alternate,
-                ),
-              ),
-
-              // Configuración de cuenta
-              _buildSectionTitle('Gestión de Vendedor'),
-              _buildMenuOption(
-                icon: Icons.edit_outlined,
-                title: 'Editar perfil',
-                onTap: () {
-                  context.pushNamed('EditarPerfilVendedorWidget');
-                },
-              ),
-              _buildMenuOption(
-  icon: Icons.inventory_2_outlined,
-  title: 'Mi catálogo de productos',
-  onTap: () {
-    // ✅ NAVEGACIÓN CORRECTA USANDO routeName
-    context.pushNamed('MiCatalogo');
-  },
-),
-                          _buildMenuOption(
-                icon: Icons.add_business_outlined,
-                title: 'Añadir nuevo producto',
-                onTap: () {
-                  context.pushNamed('AnadirProducto');
-                },
-              ),
-              
-              _buildMenuOption(
-                icon: Icons.bar_chart_outlined,
-                title: 'Estadísticas de ventas',
-                onTap: () {
-                  // Navegar a estadísticas
-                  print('Navegar a estadísticas');
-                },
-              ),
-
-              // Separador
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
-                child: Divider(
-                  height: 1.0,
-                  thickness: 1.0,
-                  color: FlutterFlowTheme.of(context).alternate,
-                ),
-              ),
-
-              // Configuración
-              _buildSectionTitle('Configuración'),
-              _buildMenuOption(
-                icon: Icons.notifications_outlined,
-                title: 'Notificaciones',
-                onTap: () {
-                  context.pushNamed('NotificationsWidget');
-                },
-              ),
-              _buildMenuOption(
-                icon: Icons.security_outlined,
-                title: 'Privacidad y seguridad',
-                onTap: () {
-                  // Navegar a privacidad
-                  print('Navegar a privacidad');
-                },
-              ),
-              _buildMenuOption(
-                icon: Icons.settings_outlined,
-                title: 'Configuración general',
-                onTap: () {
-                  // Navegar a configuración
-                  print('Navegar a configuración');
-                },
-              ),
-
-              // Separador
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
-                child: Divider(
-                  height: 1.0,
-                  thickness: 1.0,
-                  color: FlutterFlowTheme.of(context).alternate,
-                ),
-              ),
-
-              // Soporte
-              _buildSectionTitle('Soporte'),
-              _buildMenuOption(
-                icon: Icons.help_outline,
-                title: 'Centro de ayuda',
-                onTap: () {
-                  // Navegar a ayuda
-                  print('Navegar a centro de ayuda');
-                },
-              ),
-              _buildMenuOption(
-                icon: Icons.support_agent_outlined,
-                title: 'Contactar soporte',
-                subtitle: 'Soporte técnico y asistencia general',
-                onTap: () {
-                  // Contactar soporte
-                  print('Contactar soporte');
-                },
-              ),
-              _buildMenuOption(
-                icon: Icons.info_outline,
-                title: 'Acerca de la aplicación',
-                onTap: () {
-                  // Navegar a acerca de
-                  print('Navegar a acerca de');
-                },
-              ),
-
-              // Cerrar sesión
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 32.0),
-                child: FFButtonWidget(
-                  onPressed: () async {
-                      await FirebaseAuth.instance.signOut();
-                      if (context.mounted) {
-                        context.pushNamed(SignAccesoWidget.routeName);
-                      }
-                    },
-
-                  text: 'Cerrar sesión',
-                  options: FFButtonOptions(
-                    width: double.infinity,
-                    height: 50.0,
-                    padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: FlutterFlowTheme.of(context).error,
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          fontFamily: 'Karla',
-                          color: Colors.white,
-                          letterSpacing: 0.0,
-                        ),
-                    elevation: 2.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
-      child: Text(
-        title,
-        style: FlutterFlowTheme.of(context).bodyLarge.override(
-              fontFamily: 'Karla',
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.0,
-            ),
-      ),
-    );
-  }
-
-  Widget _buildMenuOption({
-    required IconData icon,
-    required String title,
-    String? subtitle,
-    VoidCallback? onTap,
-  }) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: FlutterFlowTheme.of(context).secondaryBackground,
-          ),
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 12.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Container(
-                  width: 40.0,
-                  height: 40.0,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).primaryBackground,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    icon,
-                    color: FlutterFlowTheme.of(context).primaryText,
-                    size: 20.0,
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                fontFamily: 'Karla',
-                                letterSpacing: 0.0,
-                              ),
-                        ),
-                        if (subtitle != null)
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                            child: Text(
-                              subtitle,
-                              style: FlutterFlowTheme.of(context)
-                                  .bodySmall
-                                  .override(
-                                    fontFamily: 'Karla',
-                                    color: FlutterFlowTheme.of(context).secondaryText,
-                                    letterSpacing: 0.0,
-                                  ),
+                          /// AVATAR
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 20,
+                                  color: Colors.black26,
+                                  offset: Offset(0,6),
+                                )
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.storefront,
+                              size: 50,
+                              color: Color(0xFF3A7BD5),
                             ),
                           ),
-                      ],
+
+                          const SizedBox(height: 15),
+
+                          Text(
+                            nombre,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+
+                          const SizedBox(height: 4),
+
+                          Text(
+                            correo,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                            ),
+                          ),
+
+                          const SizedBox(height: 15),
+
+                          /// BOTON EDITAR PERFIL
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: const Color(0xFF3A7BD5),
+                              elevation: 0,
+                              shape: const StadiumBorder(),
+                            ),
+                            onPressed: () {
+                              context.pushNamed('EditarPerfilVendedor');
+                            },
+                            icon: const Icon(Icons.edit),
+                            label: const Text("Editar perfil"),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
+
+                    const SizedBox(height: 25),
+
+                    /// TARJETA QR 
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(24),
+                        onTap: () {
+                          context.pushNamed(GenerarQrWidget.routeName);
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 170,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xFF667EEA),
+                                Color(0xFF764BA2),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: const [
+                              BoxShadow(
+                                blurRadius: 15,
+                                color: Colors.black26,
+                                offset: Offset(0,5),
+                              )
+                            ],
+                          ),
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+
+                              Icon(
+                                Icons.qr_code_2,
+                                size: 75,
+                                color: Colors.white,
+                              ),
+
+                              SizedBox(height: 10),
+
+                              Text(
+                                "QR de mi catálogo",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+
+                              Text(
+                                "Compártelo con tus clientes",
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    _sectionTitle("Gestión de vendedor"),
+
+                    _menuOption(
+                        Icons.inventory_2_outlined,
+                        "Mi catálogo de productos",
+                        () => context.pushNamed('MiCatalogo')),
+
+                    _menuOption(
+                        Icons.add_business_outlined,
+                        "Añadir nuevo producto",
+                        () => context.pushNamed('AnadirProducto')),
+
+                    const SizedBox(height: 25),
+
+                    _sectionTitle("Configuración"),
+
+                    _menuOption(
+                        Icons.notifications_outlined,
+                        "Notificaciones",
+                        () => context.pushNamed('NotificationsWidget')),
+
+                    _menuOption(
+                        Icons.security_outlined,
+                        "Privacidad y seguridad",
+                        () {}),
+
+                    _menuOption(
+                        Icons.settings_outlined,
+                        "Configuración general",
+                        () {}),
+
+                    const SizedBox(height: 35),
+
+                    /// BOTON CERRAR SESION
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: FFButtonWidget(
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut();
+                          if (context.mounted) {
+                            context.pushNamed(SignAccesoWidget.routeName);
+                          }
+                        },
+                        text: 'Cerrar sesión',
+                        icon: const Icon(Icons.logout),
+                        options: FFButtonOptions(
+                          width: double.infinity,
+                          height: 50,
+                          color: Colors.black,
+                          textStyle: const TextStyle(color: Colors.white),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 40)
+                  ],
                 ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: FlutterFlowTheme.of(context).secondaryText,
-                  size: 24.0,
-                ),
-              ],
-            ),
+              ),
+      ),
+    );
+  }
+
+  Widget _sectionTitle(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 17,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _menuOption(IconData icon, String text, VoidCallback onTap) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [
+              BoxShadow(
+                blurRadius: 10,
+                color: Colors.black12,
+                offset: Offset(0,4),
+              )
+            ],
+          ),
+          child: Row(
+            children: [
+              Icon(icon, size: 22),
+              const SizedBox(width: 14),
+              Expanded(child: Text(text)),
+              const Icon(Icons.chevron_right)
+            ],
           ),
         ),
       ),
