@@ -221,7 +221,7 @@ class _NavBarInvitadoWidgetState extends State<NavBarInvitadoWidget> {
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () async {
-        // ✅ Modal de aviso para usuarios invitados
+        // 
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -268,7 +268,7 @@ class _NavBarInvitadoWidgetState extends State<NavBarInvitadoWidget> {
                       child: ElevatedButton(
                         onPressed: () {
                             Navigator.pop(context);
-                            context.pushNamed(OpcionDeRegistroWidget.routeName); // ✅ Correcto
+                            context.pushNamed(OpcionDeRegistroWidget.routeName);
                           },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
