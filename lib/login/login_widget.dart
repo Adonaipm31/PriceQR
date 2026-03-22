@@ -31,7 +31,6 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
   }
 
@@ -120,17 +119,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   .override(
                                     font: GoogleFonts.karla(
                                       fontWeight: FontWeight.bold,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .titleLarge
-                                          .fontStyle,
                                     ),
                                     color: FlutterFlowTheme.of(context)
                                         .secondaryBackground,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleLarge
-                                        .fontStyle,
                                   ),
                               elevation: 0.0,
                               borderSide: BorderSide(
@@ -138,10 +129,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 width: 2.0,
                               ),
                               borderRadius: BorderRadius.circular(50.0),
-                              hoverColor:
-                                  FlutterFlowTheme.of(context).primaryText,
-                              hoverTextColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
                             ),
                           ),
                         ),
@@ -161,35 +148,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                           options: FFButtonOptions(
                             width: double.infinity,
                             height: 60.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 12.0, 0.0),
-                            iconColor: FlutterFlowTheme.of(context).primaryText,
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleLarge
-                                .override(
-                                  font: GoogleFonts.karla(
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleLarge
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleLarge
-                                      .fontStyle,
-                                ),
-                            elevation: 0.0,
-                            borderSide: BorderSide(
-                              color: Color(0xFF635E5E),
-                              width: 2.0,
-                            ),
                             borderRadius: BorderRadius.circular(50.0),
-                            hoverColor: FlutterFlowTheme.of(context).alternate,
                           ),
                         ),
                       ),
@@ -198,24 +157,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                             0.0, 12.0, 0.0, 12.0),
                         child: Text(
                           'Explore as guest (limited access)',
-                          style:
-                              FlutterFlowTheme.of(context).labelMedium.override(
-                                    font: GoogleFonts.karla(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
+                          style: FlutterFlowTheme.of(context).labelMedium,
                         ),
                       ),
                       Padding(
@@ -233,88 +175,40 @@ class _LoginWidgetState extends State<LoginWidget> {
                           options: FFButtonOptions(
                             width: double.infinity,
                             height: 60.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 12.0, 0.0),
-                            iconColor: FlutterFlowTheme.of(context).info,
-                            color: Color(0xFF6D6F81),
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleMedium
-                                .override(
-                                  font: GoogleFonts.karla(
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontStyle,
-                                ),
-                            elevation: 0.0,
-                            borderSide: BorderSide(
-                              color: Color(0xFF3D3D40),
-                              width: 2.0,
-                            ),
                             borderRadius: BorderRadius.circular(50.0),
-                            hoverColor: FlutterFlowTheme.of(context).alternate,
                           ),
                         ),
                       ),
+
+                      /// CAMBIO AQUÍ 👇
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(
                             0.0, 24.0, 0.0, 64.0),
-                        child: RichText(
-                          textScaler: MediaQuery.of(context).textScaler,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'Forgot password or username? ',
-                                style: TextStyle(),
-                              ),
-                              TextSpan(
-                                text: 'Recover here',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyLarge
-                                    .override(
-                                      font: GoogleFonts.karla(
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontStyle,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                              )
-                            ],
-                            style: FlutterFlowTheme.of(context)
-                                .labelLarge
-                                .override(
-                                  font: GoogleFonts.karla(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelLarge
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelLarge
-                                        .fontStyle,
+                        child: GestureDetector(
+                          onTap: () {
+                            context.pushNamed(SignAccesoWidget.routeName);
+                            print('🔵 RECOVER PRESIONADO');
+                          },
+                          child: RichText(
+                            textScaler: MediaQuery.of(context).textScaler,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Forgot password or username? ',
+                                  style: TextStyle(
+                                    color: Colors.black,
                                   ),
-                                  fontSize: 15.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelLarge
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelLarge
-                                      .fontStyle,
                                 ),
+                                TextSpan(
+                                  text: 'Recover here',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.blue,
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
