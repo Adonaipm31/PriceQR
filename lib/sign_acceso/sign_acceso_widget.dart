@@ -594,7 +594,6 @@ class _SignAccesoWidgetState extends State<SignAccesoWidget> {
                               0.0, 0.0, 0.0, 0.0),
                           iconPadding: EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 0.0, 0.0),
-
                           color: Color(0xFF00A7CA),
                           textStyle:
                               FlutterFlowTheme.of(context).titleMedium.override(
