@@ -65,8 +65,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                       color: FlutterFlowTheme.of(context).secondaryBackground,
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: Image.network(
-                          'https://images.unsplash.com/photo-1534943441045-1009d7cb0bb9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTYyMDF8MHwxfHNlYXJjaHwxfHxDYXJ0YWdlbmF8ZW58MHx8fHwxNzU5MjY0Nzg1fDA&ixlib=rb-4.1.0&q=80&w=1080',
+                        image: Image.asset(
+                          'assets/images/imagen_cartagena.jpg',
                         ).image,
                       ),
                     ),
@@ -75,7 +75,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                       height: 100.0,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Color(0x00FFFFFF), Color(0x31DDCDCD)],
+                          colors: [Color(0x3500A7CA), Color(0x3500A7CA)],
                           stops: [0.0, 1.0],
                           begin: AlignmentDirectional(0.0, -1.0),
                           end: AlignmentDirectional(0, 1.0),
@@ -112,9 +112,13 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   0.0, 0.0, 0.0, 0.0),
                               iconPadding: EdgeInsetsDirectional.fromSTEB(
                                   0.0, 0.0, 12.0, 0.0),
-                              iconColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              color: FlutterFlowTheme.of(context).primaryText,
+
+                              // ICONO BLANCO
+                              iconColor: Colors.white,
+
+                              // FONDO PRINCIPAL (#00A7CA)
+                              color: Color(0xFF00A7CA),
+
                               textStyle: FlutterFlowTheme.of(context)
                                   .titleLarge
                                   .override(
@@ -124,24 +128,28 @@ class _LoginWidgetState extends State<LoginWidget> {
                                           .titleLarge
                                           .fontStyle,
                                     ),
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
+                                    // TEXTO BLANCO
+                                    color: Colors.white,
                                     letterSpacing: 0.0,
                                     fontWeight: FontWeight.bold,
                                     fontStyle: FlutterFlowTheme.of(context)
                                         .titleLarge
                                         .fontStyle,
                                   ),
-                              elevation: 0.0,
+
+                              elevation: 2.0,
+
+                              // SIN BORDE
                               borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).primaryText,
-                                width: 2.0,
+                                color: Colors.transparent,
+                                width: 0.0,
                               ),
-                              borderRadius: BorderRadius.circular(50.0),
-                              hoverColor:
-                                  FlutterFlowTheme.of(context).primaryText,
-                              hoverTextColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
+
+                              borderRadius: BorderRadius.circular(12.0),
+
+                              // HOVER (un poco más oscuro o mismo tono)
+                              hoverColor: Color(0xFF0097B8),
+                              hoverTextColor: Colors.white,
                             ),
                           ),
                         ),
@@ -165,9 +173,13 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 0.0, 0.0, 0.0, 0.0),
                             iconPadding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 12.0, 0.0),
-                            iconColor: FlutterFlowTheme.of(context).primaryText,
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
+
+                            // ICONO AZUL
+                            iconColor: Color(0xFF00A7CA),
+
+                            // FONDO TRANSPARENTE
+                            color: Colors.transparent,
+
                             textStyle: FlutterFlowTheme.of(context)
                                 .titleLarge
                                 .override(
@@ -177,19 +189,28 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         .titleLarge
                                         .fontStyle,
                                   ),
+                                  // TEXTO AZUL
+                                  color: Color(0xFF00A7CA),
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.bold,
                                   fontStyle: FlutterFlowTheme.of(context)
                                       .titleLarge
                                       .fontStyle,
                                 ),
+
                             elevation: 0.0,
+
+                            // BORDE AZUL
                             borderSide: BorderSide(
-                              color: Color(0xFF635E5E),
+                              color: Color(0xFF00A7CA),
                               width: 2.0,
                             ),
-                            borderRadius: BorderRadius.circular(50.0),
-                            hoverColor: FlutterFlowTheme.of(context).alternate,
+
+                            borderRadius: BorderRadius.circular(12.0),
+
+                            // HOVER → se rellena
+                            hoverColor: Color(0xFF00A7CA),
+                            hoverTextColor: Colors.white,
                           ),
                         ),
                       ),
@@ -237,8 +258,13 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 0.0, 0.0, 0.0, 0.0),
                             iconPadding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 12.0, 0.0),
-                            iconColor: FlutterFlowTheme.of(context).info,
-                            color: Color(0xFF6D6F81),
+
+                            // ICONO BLANCO
+                            iconColor: Colors.white,
+
+                            // FONDO NORMAL (#77b8e6)
+                            color: Color(0xFF77B8E6),
+
                             textStyle: FlutterFlowTheme.of(context)
                                 .titleMedium
                                 .override(
@@ -248,19 +274,28 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         .titleMedium
                                         .fontStyle,
                                   ),
+                                  // TEXTO BLANCO
+                                  color: Colors.white,
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.bold,
                                   fontStyle: FlutterFlowTheme.of(context)
                                       .titleMedium
                                       .fontStyle,
                                 ),
+
                             elevation: 0.0,
+
+                            // SIN BORDE (opcional, más limpio)
                             borderSide: BorderSide(
-                              color: Color(0xFF3D3D40),
-                              width: 2.0,
+                              color: Colors.transparent,
+                              width: 0.0,
                             ),
-                            borderRadius: BorderRadius.circular(50.0),
-                            hoverColor: FlutterFlowTheme.of(context).alternate,
+
+                            borderRadius: BorderRadius.circular(12.0),
+
+                            // HOVER (#00a7ca)
+                            hoverColor: Color(0xFF00A7CA),
+                            hoverTextColor: Colors.white,
                           ),
                         ),
                       ),

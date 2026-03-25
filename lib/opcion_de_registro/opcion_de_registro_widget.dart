@@ -46,7 +46,7 @@ class _OpcionDeRegistroWidgetState extends State<OpcionDeRegistroWidget> {
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: Color(0xFF00A7CA),
           automaticallyImplyLeading: false,
           leading: FlutterFlowIconButton(
             borderColor: Colors.transparent,
