@@ -382,8 +382,56 @@ class _SignAccesoWidgetState extends State<SignAccesoWidget> {
                                     16.0, 12.0, 16.0, 0.0),
                                 child: FFButtonWidget(
                                   onPressed: () async {
-                                    print(
-                                        'Button pressed ...'); //mas adelante editar el maximo de caracteres
+                                    print('🔁 Forgot Password presionado');
+                                    final email =
+                                        _model.textController1?.text.trim() ??
+                                            '';
+
+                                    if (email.isEmpty) {
+                                      print('⚠️ No se ingresó correo');
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Escribe tu correo para recuperar la contraseña'),
+                                        ),
+                                      );
+                                      return;
+                                    }
+
+                                    try {
+                                      print(
+                                          '📧 Enviando correo de recuperación...');
+                                      await FirebaseAuth.instance
+                                          .sendPasswordResetEmail(email: email);
+                                      print('✅ Correo enviado correctamente');
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Se envió un correo para recuperar tu contraseña'),
+                                        ),
+                                      );
+                                    } on FirebaseAuthException catch (e) {
+                                      print(
+                                          '❌ Error al enviar correo: ${e.code}');
+                                      String mensaje;
+
+                                      if (e.code == 'user-not-found') {
+                                        mensaje =
+                                            'No existe una cuenta con ese correo.';
+                                      } else if (e.code == 'invalid-email') {
+                                        mensaje = 'Correo inválido.';
+                                      } else {
+                                        mensaje = 'Error: ${e.message}';
+                                      }
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(content: Text(mensaje)),
+                                      );
+                                    } //CORREGIMIENTO SOBRE RESTABLECIMIENTO DE CONTRASEÑA
                                   },
                                   text: 'Forgot Password?',
                                   options: FFButtonOptions(
@@ -546,6 +594,7 @@ class _SignAccesoWidgetState extends State<SignAccesoWidget> {
                               0.0, 0.0, 0.0, 0.0),
                           iconPadding: EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 0.0, 0.0),
+
                           color: Color(0xFF00A7CA),
                           textStyle:
                               FlutterFlowTheme.of(context).titleMedium.override(
