@@ -6,10 +6,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'flutter_flow/flutter_flow_util.dart';
-// ✅ IMPORT CRÍTICO QUE FALTABA
+
+// ✅ NUEVO IMPORT
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ✅ CARGAR .env (ANTES DE TODO)
+  await dotenv.load(fileName: ".env");
 
   // ✅ INICIALIZACIÓN ROBUSTA PARA ANDROID
   try {
@@ -19,10 +24,8 @@ Future<void> main() async {
     print("✅ Firebase inicializado correctamente");
   } catch (e) {
     print("❌ Error inicializando Firebase: $e");
-    // En caso de error, igual procedemos para evitar bloqueo
   }
 
-  // Configuración del manejo de rutas web
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
 
@@ -47,7 +50,7 @@ class _MyAppState extends State<MyApp> {
   late AppStateNotifier _appStateNotifier;
   late GoRouter _router;
   bool _initialized = false;
-  String? _initError; // ✅ VARIABLE FALTANTE
+  String? _initError;
 
   @override
   void initState() {
@@ -60,18 +63,15 @@ class _MyAppState extends State<MyApp> {
       _appStateNotifier = AppStateNotifier.instance;
       _router = createRouter(_appStateNotifier);
 
-      // ✅ INICIALIZACIÓN MÁS SIMPLE
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
+
       print("✅ Firebase inicializado");
 
-      // ✅ NAVEGACIÓN DIRECTA AL LOGIN DESPUÉS DE 2 SEGUNDOS
       Future.delayed(Duration(seconds: 2), () {
         if (mounted) {
           _appStateNotifier.stopShowingSplashImage();
-          print("🔄 Splash detenido, navegando a login...");
-          // ✅ NAVEGACIÓN DIRECTA Y EXPLÍCITA - ELIMINA CONFLICTOS
           _router.go('/login');
         }
       });
@@ -87,9 +87,8 @@ class _MyAppState extends State<MyApp> {
       if (mounted) {
         safeSetState(() {
           _initialized = true;
-          _initError = e.toString(); // ✅ ASIGNAR EL ERROR
+          _initError = e.toString();
           _appStateNotifier.stopShowingSplashImage();
-          // ✅ EN CASO DE ERROR, TAMBIÉN NAVEGAR AL LOGIN
           _router.go('/login');
         });
       }
@@ -98,21 +97,18 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _checkFirestoreConnection() async {
     try {
-      // ✅ CHECK MÁS SIMPLE Y SEGURO
       await FirebaseFirestore.instance
           .collection('productos')
           .limit(1)
           .get()
           .timeout(Duration(seconds: 10));
-      
+
       print("✅ Conexión Firestore exitosa");
     } catch (e) {
       print("⚠️ Check Firestore opcional falló: $e");
-      // No bloqueamos la app por este error
     }
   }
 
-  // 🔧 Métodos de navegación
   String getRoute([RouteMatch? routeMatch]) {
     final RouteMatch lastMatch =
         routeMatch ?? _router.routerDelegate.currentConfiguration.last;
@@ -133,15 +129,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ MANEJO DE ESTADOS DE INICIALIZACIÓN
     if (!_initialized) {
       return MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.white,
-
-
-
-        
           body: Center(
             child: Image.asset(
               'assets/images/Splash_Screen.png',
@@ -153,7 +144,6 @@ class _MyAppState extends State<MyApp> {
     }
 
     if (_initError != null) {
-      // Pantalla de error segura
       return MaterialApp(
         home: Scaffold(
           body: Center(
@@ -192,11 +182,10 @@ class _MyAppState extends State<MyApp> {
       ),
       themeMode: _themeMode,
       routerConfig: _router,
-      // ✅ CONFIGURACIÓN ESPECÍFICA PARA ANDROID
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.linear(1.0), // Evita escalado de texto en Android
+            textScaler: TextScaler.linear(1.0),
           ),
           child: child!,
         );

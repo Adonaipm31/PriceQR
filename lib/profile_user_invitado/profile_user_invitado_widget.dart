@@ -1,8 +1,9 @@
 import '/components/nav_bar_invitado_widget.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-// import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'profile_user_invitado_model.dart';
@@ -25,16 +26,246 @@ class _ProfileUserInvitadoWidgetState extends State<ProfileUserInvitadoWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  void initState() {
-    super.initState();
-    _model = createModel(context, () => ProfileUserInvitadoModel());
-  }
+void initState() {
+  super.initState();
+  _model = createModel(context, () => ProfileUserInvitadoModel());
+
+  loadNotificationSettings();
+}
 
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
+  }
+
+// VARIABLES DE ESTADO
+bool eventNotifications = false;
+bool promotions = false;
+bool appUpdates = false;
+
+// CARGAR CONFIGURACION GUARDADA
+Future<void> loadNotificationSettings() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  setState(() {
+    eventNotifications = prefs.getBool('eventNotifications') ?? false;
+    promotions = prefs.getBool('promotions') ?? false;
+    appUpdates = prefs.getBool('appUpdates') ?? false;
+  });
+}
+
+// GUARDAR CONFIGURACION
+Future<void> saveSettings() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.setBool('eventNotifications', eventNotifications);
+  await prefs.setBool('promotions', promotions);
+  await prefs.setBool('appUpdates', appUpdates);
+}
+
+// PEDIR PERMISO DE NOTIFICACIONES
+Future<void> requestNotificationPermission() async {
+  var status = await Permission.notification.request();
+
+  if (status.isGranted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Notifications enabled")),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Notification permission denied")),
+    );
+  }
+}
+
+/// NOTIFICATION SETTINGS FUNCIONAL
+void _showNotificationSettings() {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setModalState) {
+          return Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                const Text(
+                  "Notification Settings",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                SwitchListTile(
+                  title: const Text("Event Notifications"),
+                  value: eventNotifications,
+                  onChanged: (v) async {
+
+                    if (v) {
+                      await requestNotificationPermission();
+                    }
+
+                    setModalState(() {
+                      eventNotifications = v;
+                    });
+
+                    setState(() {});
+                    saveSettings();
+                  },
+                ),
+
+                SwitchListTile(
+                  title: const Text("Promotions"),
+                  value: promotions,
+                  onChanged: (v) {
+
+                    setModalState(() {
+                      promotions = v;
+                    });
+
+                    setState(() {});
+                    saveSettings();
+                  },
+                ),
+
+                SwitchListTile(
+                  title: const Text("App Updates"),
+                  value: appUpdates,
+                  onChanged: (v) {
+
+                    setModalState(() {
+                      appUpdates = v;
+                    });
+
+                    setState(() {});
+                    saveSettings();
+                  },
+                ),
+
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+  /// ABOUT APP
+  void _showAboutApp() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text("About the App"),
+          content: const Text(
+            "This application helps tourists discover trusted places such as restaurants, hotels, bars and other locations while avoiding price scams. "
+            "You can explore locations, read reviews and enjoy a safer experience during your travels.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Close"),
+            )
+          ],
+        );
+      },
+    );
+  }
+ 
+  /// CONTACT SUPPORT
+  void _contactSupport() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text(
+                "Contact Support",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20),
+              ListTile(
+                leading: Icon(Icons.email, color: Colors.blue),
+                title: Text("Email Support"),
+                subtitle: Text("support@priceqr.com"),
+              ),
+              ListTile(
+                leading: Icon(Icons.phone, color: Colors.orange),
+                title: Text("Call Support"),
+                subtitle: Text("+57 300 000 0000"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _goToRegister() {
+    context.pushNamed("OpcionDeRegistro");
+  }
+
+  Widget optionCard(String title, IconData icon, Color color, VoidCallback onTap) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: FlutterFlowTheme.of(context).secondaryBackground,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              )
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: color),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  title,
+                  style: FlutterFlowTheme.of(context).bodyLarge,
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios_rounded, size: 16)
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -42,362 +273,130 @@ class _ProfileUserInvitadoWidgetState extends State<ProfileUserInvitadoWidget> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+
       body: Stack(
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Container(
-                width: MediaQuery.sizeOf(context).width * 1.0,
-                height: 160.0,
-                decoration: BoxDecoration(
-                  color: Color(0xFF21242D),
-                ),
-                child: Padding(
-                  padding:
-                      EdgeInsetsDirectional.fromSTEB(20.0, 40.0, 20.0, 0.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Card(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        color: FlutterFlowTheme.of(context).alternate,
-                        elevation: 0.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(2.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50.0),
-                            child: Image.asset(
+
+          SingleChildScrollView(
+            child: Column(
+              children: [
+
+                Container(
+                  width: double.infinity,
+                  height: 220,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 52, 105, 219),
+                        Color.fromARGB(255, 8, 70, 204),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                  ),
+
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+                    child: Row(
+                      children: [
+
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 3),
+                          ),
+                          child: const CircleAvatar(
+                            radius: 40,
+                            backgroundImage: AssetImage(
                               'assets/images/wmremove-transformed.jpeg',
-                              width: 80.0,
-                              height: 80.0,
-                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              8.0, 0.0, 0.0, 0.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Guest User',
-                                style: FlutterFlowTheme.of(context)
-                                    .headlineSmall
-                                    .override(
-                                      font: GoogleFonts.karla(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .headlineSmall
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .headlineSmall
-                                            .fontStyle,
-                                      ),
-                                      color: FlutterFlowTheme.of(context).info,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .headlineSmall
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .headlineSmall
-                                          .fontStyle,
-                                    ),
-                              ),
-                              Divider(
-                                thickness: 2.0,
-                                color: FlutterFlowTheme.of(context).alternate,
-                              ),
-                              Text(
-                                'You are browsing in guest mode.',
-                                style: FlutterFlowTheme.of(context)
-                                    .headlineSmall
-                                    .override(
-                                      font: GoogleFonts.karla(
-                                        fontWeight: FontWeight.w200,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .headlineSmall
-                                            .fontStyle,
-                                      ),
-                                      color: FlutterFlowTheme.of(context).info,
-                                      fontSize: 20.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w200,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .headlineSmall
-                                          .fontStyle,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
-                child: Material(
-                  color: Colors.transparent,
-                  elevation: 0.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    height: 60.0,
-                    decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 3.0,
-                          color: Color(0x33000000),
-                          offset: Offset(
-                            0.0,
-                            1.0,
-                          ),
+
+                        const SizedBox(width: 16),
+
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            Text(
+                              "Guest User",
+                              style: FlutterFlowTheme.of(context)
+                                  .headlineSmall
+                                  .copyWith(color: Colors.white),
+                            ),
+
+                            const SizedBox(height: 6),
+
+                            Text(
+                              "Browsing in guest mode",
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .copyWith(color: Colors.white70),
+                            ),
+                          ],
                         )
                       ],
-                      borderRadius: BorderRadius.circular(8.0),
-                      border: Border.all(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                        width: 0.0,
-                      ),
-                    ),
-                    child: Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 4.0, 0.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Notification Settings',
-                            style:
-                                FlutterFlowTheme.of(context).bodyLarge.override(
-                                      font: GoogleFonts.karla(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontStyle,
-                                    ),
-                          ),
-                          Icon(
-                            Icons.notifications,
-                            color: Color(0xFFDD932C),
-                            size: 24.0,
-                          ),
-                        ],
-                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
-                child: Material(
-                  color: Colors.transparent,
-                  elevation: 0.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    height: 60.0,
-                    decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 3.0,
-                          color: Color(0x33000000),
-                          offset: Offset(
-                            0.0,
-                            1.0,
-                          ),
-                        )
-                      ],
-                      borderRadius: BorderRadius.circular(8.0),
-                      border: Border.all(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                        width: 0.0,
-                      ),
-                    ),
-                    child: Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 4.0, 0.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'About the App',
-                            style:
-                                FlutterFlowTheme.of(context).bodyLarge.override(
-                                      font: GoogleFonts.karla(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontStyle,
-                                    ),
-                          ),
-                          Icon(
-                            Icons.info,
-                            color: Color(0xFF1F84D0),
-                            size: 24.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+
+                const SizedBox(height: 20),
+
+                optionCard(
+                  "Notification Settings",
+                  Icons.notifications,
+                  Colors.orange,
+                  _showNotificationSettings,
                 ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
-                child: Material(
-                  color: Colors.transparent,
-                  elevation: 0.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    height: 60.0,
-                    decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 3.0,
-                          color: Color(0x33000000),
-                          offset: Offset(
-                            0.0,
-                            1.0,
-                          ),
-                        )
-                      ],
-                      borderRadius: BorderRadius.circular(8.0),
-                      border: Border.all(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                        width: 0.0,
-                      ),
-                    ),
-                    child: Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 4.0, 0.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Contact Support',
-                            style:
-                                FlutterFlowTheme.of(context).bodyLarge.override(
-                                      font: GoogleFonts.karla(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontStyle,
-                                    ),
-                          ),
-                          Icon(
-                            Icons.support_agent,
-                            color: FlutterFlowTheme.of(context).primaryText,
-                            size: 24.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+
+                optionCard(
+                  "About the App",
+                  Icons.info,
+                  Colors.blue,
+                  _showAboutApp,
                 ),
-              ),
-              Align(
-                alignment: AlignmentDirectional(0.0, 0.0),
-                child: Padding(
-                  padding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 104.0, 0.0, 40.0),
+
+                optionCard(
+                  "Contact Support",
+                  Icons.support_agent,
+                  Colors.green,
+                  _contactSupport,
+                ),
+
+                const SizedBox(height: 30),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: FFButtonWidget(
-                    onPressed: () async {
-                  //    context.pushNamed(OpcionDeRegistroWidget.routeName);
-                    },
-                    text: 'Create Account',
+                    onPressed: _goToRegister,
+                    text: "Create Account",
                     options: FFButtonOptions(
-                      width: 123.59,
-                      height: 50.0,
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF00B894),
-                      textStyle:
-                          FlutterFlowTheme.of(context).bodyLarge.override(
-                                font: GoogleFonts.karla(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyLarge
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyLarge
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyLarge
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyLarge
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                        width: 1.0,
+                      width: double.infinity,
+                      height: 55,
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                      elevation: 6,
+                      borderRadius: BorderRadius.circular(14),
+                      textStyle: FlutterFlowTheme.of(context)
+                          .titleSmall
+                          .override(
+                        font: GoogleFonts.karla(),
+                        color: Colors.white,
                       ),
-                      borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 120),
+              ],
+            ),
           ),
+
           wrapWithModel(
             model: _model.navBarInvitadoModel,
             updateCallback: () => safeSetState(() {}),

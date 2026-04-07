@@ -1,8 +1,9 @@
 import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'sos_model.dart';
 export 'sos_model.dart';
 
@@ -30,8 +31,97 @@ class _SosWidgetState extends State<SosWidget> {
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
+  }
+
+  Future<void> llamarNumero(String numero) async {
+    PermissionStatus status = await Permission.phone.request();
+
+    if (status.isGranted) {
+      final Uri url = Uri.parse("tel:$numero");
+
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
+      }
+    } else {
+      print("Permiso de llamada denegado");
+    }
+  }
+
+  Widget emergencyCard(
+      Color iconColor, IconData icon, String title, String contact, String numero) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Color(0xFF223844),
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 15,
+              color: Colors.black26,
+              offset: Offset(0, 6),
+            )
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: iconColor,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: Colors.white, size: 22),
+            ),
+            SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.karla(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    contact,
+                    style: GoogleFonts.karla(
+                      color: Colors.white70,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                llamarNumero(numero);
+              },
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: iconColor.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.phone,
+                  color: iconColor,
+                  size: 18,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -43,653 +133,141 @@ class _SosWidgetState extends State<SosWidget> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-        appBar: PreferredSize(
-          preferredSize:
-              Size.fromHeight(MediaQuery.sizeOf(context).height * 0.06),
-          child: AppBar(
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            automaticallyImplyLeading: false,
-            leading: Align(
-              alignment: AlignmentDirectional(0.0, 0.0),
-              child: FlutterFlowIconButton(
-                borderColor: Colors.transparent,
-                borderRadius: 30.0,
-                borderWidth: 1.0,
-                buttonSize: 60.0,
-                icon: Icon(
-                  Icons.arrow_back_rounded,
-                  color: Colors.black,
-                  size: 30.0,
-                ),
-                onPressed: () async {
-                  context.pop();
-                },
-              ),
+        backgroundColor: Color(0xFF0E2A36),
+        appBar: AppBar(
+          backgroundColor: Color(0xFF0E2A36),
+          elevation: 0,
+          leading: FlutterFlowIconButton(
+            borderColor: Colors.transparent,
+            borderRadius: 30,
+            buttonSize: 46,
+            icon: Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.white,
+              size: 20,
             ),
-            actions: [],
-            centerTitle: true,
-            elevation: 2.0,
+            onPressed: () async {
+              context.pop();
+            },
           ),
+          title: Text(
+            "Contactos de Emergencia",
+            style: GoogleFonts.karla(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 18,
+            ),
+          ),
+          centerTitle: true,
         ),
         body: SafeArea(
-          top: true,
-          child: Stack(
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 6.0, 0.0, 0.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        height: 100.0,
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 26),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF223844),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 20,
+                        color: Colors.black38,
+                        offset: Offset(0, 8),
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 70,
+                        height: 70,
                         decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFFFF7A5A),
+                              Color(0xFFFF4D4D)
+                            ],
+                          ),
+                          shape: BoxShape.circle,
                         ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  child: Image.asset(
-                                    'assets/images/as.png',
-                                    width: 75.5,
-                                    height: 66.0,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      24.0, 2.0, 0.0, 8.0),
-                                  child: Text(
-                                    'In Case of Emergency',
-                                    textAlign: TextAlign.center,
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          font: GoogleFonts.karla(
-                                            fontWeight: FontWeight.w500,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                          fontSize: 18.0,
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                          lineHeight: 1.5,
-                                        ),
-                                  ),
-                                ),
-                              ].divide(SizedBox(width: 12.0)),
-                            ),
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Container(
-                                  width: MediaQuery.sizeOf(context).width * 1.0,
-                                  height: 5.0,
-                                  decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                  ),
-                                ),
-                                Divider(
-                                  thickness: 2.0,
-                                  color: FlutterFlowTheme.of(context).alternate,
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  24.0, 0.0, 24.0, 0.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 10.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 0.0, 10.0, 0.0),
-                                          child: Container(
-                                            width: 44.0,
-                                            height: 44.0,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFF007BFF),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  blurRadius: 20.0,
-                                                  color: Color(0x1F2E2E4F),
-                                                  offset: Offset(
-                                                    0.0,
-                                                    6.0,
-                                                  ),
-                                                )
-                                              ],
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Icon(
-                                              Icons.phone,
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryBackground,
-                                              size: 24.0,
-                                            ),
-                                          ),
-                                        ),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Police',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.karla(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        fontSize: 15.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                        lineHeight: 1.2,
-                                                      ),
-                                            ),
-                                            Text(
-                                              'Contact: 123',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.karla(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        fontSize: 15.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                        lineHeight: 1.2,
-                                                      ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 10.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 0.0, 10.0, 0.0),
-                                          child: Container(
-                                            width: 44.0,
-                                            height: 44.0,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFFFF3B30),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  blurRadius: 20.0,
-                                                  color: Color(0x1F2E2E4F),
-                                                  offset: Offset(
-                                                    0.0,
-                                                    6.0,
-                                                  ),
-                                                )
-                                              ],
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Icon(
-                                              Icons.phone,
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryBackground,
-                                              size: 24.0,
-                                            ),
-                                          ),
-                                        ),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Fire Department',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.karla(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        fontSize: 15.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                        lineHeight: 1.2,
-                                                      ),
-                                            ),
-                                            Text(
-                                              'Contact: 123',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.karla(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        fontSize: 15.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                        lineHeight: 1.2,
-                                                      ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 10.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 0.0, 10.0, 0.0),
-                                          child: Container(
-                                            width: 44.0,
-                                            height: 44.0,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFF28A745),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  blurRadius: 20.0,
-                                                  color: Color(0x1F2E2E4F),
-                                                  offset: Offset(
-                                                    0.0,
-                                                    6.0,
-                                                  ),
-                                                )
-                                              ],
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Icon(
-                                              Icons.phone,
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryBackground,
-                                              size: 24.0,
-                                            ),
-                                          ),
-                                        ),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Ambulance / Medical Emergency',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.karla(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        fontSize: 15.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                        lineHeight: 1.2,
-                                                      ),
-                                            ),
-                                            Text(
-                                              'Contact: 123',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.karla(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        fontSize: 15.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                        lineHeight: 1.2,
-                                                      ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  24.0, 0.0, 24.0, 0.0),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 10.0, 0.0, 10.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0.0, 0.0, 10.0, 0.0),
-                                            child: Container(
-                                              width: 44.0,
-                                              height: 44.0,
-                                              decoration: BoxDecoration(
-                                                color: Colors.orange,
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    blurRadius: 20.0,
-                                                    color: Color(0x1F2E2E4F),
-                                                    offset: Offset(
-                                                      0.0,
-                                                      6.0,
-                                                    ),
-                                                  )
-                                                ],
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: Icon(
-                                                Icons.phone_sharp,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryBackground,
-                                                size: 24.0,
-                                              ),
-                                            ),
-                                          ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Civil Defense / Rescue',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.karla(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                          lineHeight: 1.2,
-                                                        ),
-                                              ),
-                                              Text(
-                                                'Contact: 911',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.karla(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                          lineHeight: 1.2,
-                                                        ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 10.0, 0.0, 10.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0.0, 0.0, 10.0, 0.0),
-                                            child: Container(
-                                              width: 44.0,
-                                              height: 44.0,
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .success,
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    blurRadius: 20.0,
-                                                    color: Color(0x1F2E2E4F),
-                                                    offset: Offset(
-                                                      0.0,
-                                                      6.0,
-                                                    ),
-                                                  )
-                                                ],
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: Icon(
-                                                Icons.phone_sharp,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryBackground,
-                                                size: 24.0,
-                                              ),
-                                            ),
-                                          ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Red Cross',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.karla(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                          lineHeight: 1.2,
-                                                        ),
-                                              ),
-                                              Text(
-                                                'Contact: 911',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.karla(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                          lineHeight: 1.2,
-                                                        ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Divider(
-                                      height: 1.0,
-                                      thickness: 2.0,
-                                      color: Color(0x34878787),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ].addToEnd(SizedBox(height: 80.0)),
+                        child: Icon(
+                          Icons.sos,
+                          color: Colors.white,
+                          size: 32,
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 12),
+                      Text(
+                        "En Caso de Emergencia",
+                        style: GoogleFonts.karla(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        "Toca el icono de teléfono para llamar",
+                        style: GoogleFonts.karla(
+                          color: Colors.white60,
+                          fontSize: 13,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 24),
+
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+
+                        emergencyCard(
+                            Color(0xFF1E88E5),
+                            Icons.shield,
+                            "Policía",
+                            "Contacto: 123",
+                            "123"),
+
+                        emergencyCard(
+                            Color(0xFFE53935),
+                            Icons.local_fire_department,
+                            "Bomberos",
+                            "Contacto: 123",
+                            "123"),
+
+                        emergencyCard(
+                            Color(0xFF43A047),
+                            Icons.medical_services,
+                            "Ambulancia / Emergencia Médica",
+                            "Contacto: 123",
+                            "123"),
+
+                        emergencyCard(
+                            Color(0xFFFFA000),
+                            Icons.support_agent,
+                            "Defensa Civil / Rescate",
+                            "Contacto: 911",
+                            "911"),
+
+                        emergencyCard(
+                            Color(0xFFD32F2F),
+                            Icons.favorite,
+                            "Cruz Roja",
+                            "Contacto: 911",
+                            "911"),
+
+                        SizedBox(height: 40)
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

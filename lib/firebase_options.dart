@@ -40,50 +40,54 @@ class DefaultFirebaseOptions {
     }
   }
 
+//Datos de conexion con la base de datos en FIREBASE(Datos modificados a nueva base)
   static const FirebaseOptions android = FirebaseOptions(
-  apiKey: 'AIzaSyAo_920ObGG6eOLvCPdR5U7fmtC6XxD2K0',
-  appId: '1:968736313295:android:57149b581a36219b4e0cba',
-  messagingSenderId: '968736313295',
-  projectId: 'priceqr',
-  storageBucket: 'priceqr.firebasestorage.app',
+  apiKey: 'AIzaSyBcee6o50iCy4biNsixCtXY7NN3djPXhfU',
+  appId: '1:197222537051:android:20d4e85cb48a34a3d12c7e',
+  messagingSenderId: '197222537051',
+  projectId: 'pricetest-733fa',
+  storageBucket: 'pricetest-733fa.firebasestorage.app',
 );
 
-
+//Modificado
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBxSw6sP2ho6LMFrf-GFeQ29pSnpoSNsAY',
-    appId: '1:968736313295:web:3f14104e7cf397cf4e0cba',
-    messagingSenderId: '968736313295',
-    projectId: 'priceqr',
-    authDomain: 'priceqr.firebaseapp.com',
-    storageBucket: 'priceqr.firebasestorage.app',
-    measurementId: 'G-PYJX6EZLPH',
+    apiKey: 'AIzaSyDopW2HiQc2seb13Y-TG8ZQJO9aQTIx2cg',
+    appId: '1:197222537051:web:a56d71638cf6e451d12c7e',
+    messagingSenderId: '197222537051',
+    projectId: 'pricetest-733fa',
+    authDomain: 'pricetest-733fa.firebaseapp.com',
+    storageBucket: 'pricetest-733fa.firebasestorage.app',
+    measurementId: 'G-FP0DGJM55G',
   );
 
+//Modificado
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA8nufeXTbIeznrtJPQ_OaWzSVjdux3x1g',
-    appId: '1:968736313295:ios:af0c0707832d4b184e0cba',
-    messagingSenderId: '968736313295',
-    projectId: 'priceqr',
-    storageBucket: 'priceqr.firebasestorage.app',
+    apiKey: 'AIzaSyDTnUz4_vooLkGnp2s7EBBMUngjsWtX7-4',
+    appId: '1:197222537051:ios:d7038734bb91721cd12c7e',
+    messagingSenderId: '197222537051',
+    projectId: 'pricetest-733fa',
+    storageBucket: 'pricetest-733fa.firebasestorage.app',
     iosBundleId: 'com.SynergyLabs.gatedcommunity',
   );
 
+//Modificado
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA8nufeXTbIeznrtJPQ_OaWzSVjdux3x1g',
-    appId: '1:968736313295:ios:01b1c4db21133abd4e0cba',
-    messagingSenderId: '968736313295',
-    projectId: 'priceqr',
-    storageBucket: 'priceqr.firebasestorage.app',
-    iosBundleId: 'com.synergylabs.priceqr',
+    apiKey: 'AIzaSyDTnUz4_vooLkGnp2s7EBBMUngjsWtX7-4',
+    appId: '1:197222537051:ios:d7038734bb91721cd12c7e',
+    messagingSenderId: '197222537051',
+    projectId: 'pricetest-733fa',
+    storageBucket: 'pricetest-733fa.firebasestorage.app',
+    iosBundleId: 'com.SynergyLabs.gatedcommunity',
   );
 
+//Modificado
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBxSw6sP2ho6LMFrf-GFeQ29pSnpoSNsAY',
-    appId: '1:968736313295:web:d76554625f91029d4e0cba',
-    messagingSenderId: '968736313295',
-    projectId: 'priceqr',
-    authDomain: 'priceqr.firebaseapp.com',
-    storageBucket: 'priceqr.firebasestorage.app',
-    measurementId: 'G-8CDSPMVSN6',
+    apiKey: 'AIzaSyDopW2HiQc2seb13Y-TG8ZQJO9aQTIx2cg',
+    appId: '1:197222537051:web:a56d71638cf6e451d12c7e',
+    messagingSenderId: '197222537051',
+    projectId: 'pricetest-733fa',
+    authDomain: 'pricetest-733fa.firebaseapp.com',
+    storageBucket: 'pricetest-733fa.firebasestorage.app',
+    measurementId: 'G-FP0DGJM55G',
   );
 }
