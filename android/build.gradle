@@ -8,10 +8,10 @@ buildscript {
         classpath 'com.google.gms:google-services:4.4.2'
 
         // ✅ Plugin de Android Gradle (moderno, estable con Flutter 3.24+)
-        classpath 'com.android.tools.build:gradle:8.6.1'
+        
 
         // ✅ Kotlin 2.1.0 (compatible con AGP 8.6.x)
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0"
+        
     }
 }
 
@@ -33,7 +33,7 @@ subprojects {
     // Kotlin moderno
     project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
-            jvmTarget = "11"
+            jvmTarget = "17"
         }
     }
 }

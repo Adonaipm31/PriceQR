@@ -426,77 +426,70 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
 
     final precioIngresado = double.tryParse(_model.precioProductoTextController.text) ?? 0;
     
-    // ✅ BUSCAR EN BASE DE DATOS SIEMPRE
-    double precioMaximoEncontrado = 0;
-    String nombreProductoOficial = '';
-    
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('precios_oficiales')
-          .where('categoria', isEqualTo: _model.categoriaProductoValue)
-          .where('nombre', isGreaterThanOrEqualTo: _model.nombreProductoTextController.text)
-          .where('nombre', isLessThanOrEqualTo: _model.nombreProductoTextController.text + 'z')
-          .limit(1)
-          .get();
+    // ✅ BUSCAR EL PRECIO MÁXIMO POR CATEGORÍA
+double precioMaximoEncontrado = 0;
 
-      if (snapshot.docs.isNotEmpty) {
-        final producto = snapshot.docs.first.data();
-        precioMaximoEncontrado = (producto['precio_maximo'] ?? 0).toDouble();
-        nombreProductoOficial = producto['nombre'] ?? '';
-      } else {
-        final snapshotCategoria = await FirebaseFirestore.instance
-            .collection('precios_oficiales')
-            .where('categoria', isEqualTo: _model.categoriaProductoValue)
-            .limit(5)
-            .get();
+try {
+  final snapshotCategoria = await FirebaseFirestore.instance
+      .collection('precios_oficiales')
+      .where('categoria', isEqualTo: _model.categoriaProductoValue)
+      .get();
 
-        if (snapshotCategoria.docs.isNotEmpty) {
-          for (final doc in snapshotCategoria.docs) {
-            final precioMax = (doc.data()['precio_maximo'] ?? 0).toDouble();
-            if (precioMax > precioMaximoEncontrado) {
-              precioMaximoEncontrado = precioMax;
-            }
-          }
-        }
+  if (snapshotCategoria.docs.isNotEmpty) {
+    for (final doc in snapshotCategoria.docs) {
+      final precioMax = (doc.data()['precio_maximo'] ?? 0).toDouble();
+      if (precioMax > precioMaximoEncontrado) {
+        precioMaximoEncontrado = precioMax;
       }
-    } catch (e) {
-      print('Error buscando precios oficiales: $e');
     }
+  }
+} catch (e) {
+  print('Error buscando precios oficiales: $e');
+}
 
-    // ✅ VALIDACIÓN STRICT: Precio máximo oficial
-    if (precioMaximoEncontrado > 0 && precioIngresado > precioMaximoEncontrado) {
-      await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.warning_amber_rounded, color: FlutterFlowTheme.of(context).error, size: 24),
-              SizedBox(width: 12),
-              Text('Precio No Permitido', style: FlutterFlowTheme.of(context).headlineSmall.override(
-                fontFamily: 'Karla', color: FlutterFlowTheme.of(context).error, letterSpacing: 0.0,
+    // ✅ VALIDACIÓN STRICT: Precio máximo oficial por categoría
+if (precioMaximoEncontrado > 0 && precioIngresado > precioMaximoEncontrado) {
+  await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Row(
+        children: [
+          Icon(Icons.warning_amber_rounded,
+              color: FlutterFlowTheme.of(context).error, size: 24),
+          SizedBox(width: 12),
+          Text('Precio No Permitido',
+              style: FlutterFlowTheme.of(context).headlineSmall.override(
+                fontFamily: 'Karla',
+                color: FlutterFlowTheme.of(context).error,
+                letterSpacing: 0.0,
               )),
-            ],
-          ),
-          content: Text(
-            nombreProductoOficial.isNotEmpty
-              ? 'Está sobrepasando los precios permitidos establecidos por el gobierno y la Asociación de Vendedores de Cartagena.\n\nProducto: $nombreProductoOficial\nPrecio ingresado: \$${precioIngresado.toStringAsFixed(0)} COP\nPrecio máximo permitido: \$${precioMaximoEncontrado.toStringAsFixed(0)} COP\n\nPor favor ajuste el precio para continuar con el registro.'
-              : 'Está sobrepasando los precios permitidos establecidos por el gobierno y la Asociación de Vendedores de Cartagena.\n\nCategoría: ${_model.categoriaProductoValue}\nPrecio ingresado: \$${precioIngresado.toStringAsFixed(0)} COP\nPrecio máximo permitido en esta categoría: \$${precioMaximoEncontrado.toStringAsFixed(0)} COP\n\nPor favor ajuste el precio para continuar con el registro.',
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
-              fontFamily: 'Karla', letterSpacing: 0.0, lineHeight: 1.4,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Entendido', style: FlutterFlowTheme.of(context).bodyMedium.override(
-                fontFamily: 'Karla', color: FlutterFlowTheme.of(context).primary, letterSpacing: 0.0,
-              )),
-            ),
-          ],
+        ],
+      ),
+      content: Text(
+        'Está sobrepasando los precios permitidos establecidos por la regulación.\n\n'
+        'Categoría: ${_model.categoriaProductoValue}\n'
+        'Precio ingresado: \$${precioIngresado.toStringAsFixed(0)} COP\n'
+        'Precio máximo permitido en esta categoría: \$${precioMaximoEncontrado.toStringAsFixed(0)} COP\n\n'
+        'Por favor ajuste el precio para continuar con el registro.',
+        style: FlutterFlowTheme.of(context).bodyMedium.override(
+          fontFamily: 'Karla', letterSpacing: 0.0, lineHeight: 1.4,
         ),
-      );
-      return;
-    }
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('Entendido',
+              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                fontFamily: 'Karla',
+                color: FlutterFlowTheme.of(context).primary,
+                letterSpacing: 0.0,
+              )),
+        ),
+      ],
+    ),
+  );
+  return;
+}
 
     setState(() => _subiendo = true);
 
