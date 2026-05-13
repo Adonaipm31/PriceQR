@@ -7,6 +7,8 @@ export 'perfil_vendedor_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import '/components/nav_bar_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class PerfilVendedorWidget extends StatefulWidget {
   const PerfilVendedorWidget({super.key});
@@ -66,6 +68,21 @@ class _PerfilVendedorWidgetState extends State<PerfilVendedorWidget> {
     });
   }
 
+  Future<void> _abrirEstadisticas() async {
+    final Uri url = Uri.parse(
+      'https://app.powerbi.com/view?r=eyJrIjoiZjVjNmFkMGYtMTU1OS00ZGVlLThlYzEtYmRiZWMwY2NmOTdiIiwidCI6IjkxODAxODkwLWFmMDItNDc3ZS04ZGYwLTFmNjA3YWIxMjI5NiIsImMiOjR9',
+    );
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+    } else {
+      throw 'No se pudo abrir el enlace';
+    }
+  }
+
   @override
   void dispose() {
     _model.dispose();
@@ -83,7 +100,6 @@ class _PerfilVendedorWidgetState extends State<PerfilVendedorWidget> {
             : SingleChildScrollView(
                 child: Column(
                   children: [
-
                     /// HEADER PROFESIONAL
                     Container(
                       width: double.infinity,
@@ -104,7 +120,6 @@ class _PerfilVendedorWidgetState extends State<PerfilVendedorWidget> {
                       ),
                       child: Column(
                         children: [
-
                           /// AVATAR
                           Container(
                             width: 100,
@@ -116,7 +131,7 @@ class _PerfilVendedorWidgetState extends State<PerfilVendedorWidget> {
                                 BoxShadow(
                                   blurRadius: 20,
                                   color: Colors.black26,
-                                  offset: Offset(0,6),
+                                  offset: Offset(0, 6),
                                 )
                               ],
                             ),
@@ -169,7 +184,7 @@ class _PerfilVendedorWidgetState extends State<PerfilVendedorWidget> {
 
                     const SizedBox(height: 25),
 
-                    /// TARJETA QR 
+                    /// TARJETA QR
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: InkWell(
@@ -192,22 +207,19 @@ class _PerfilVendedorWidgetState extends State<PerfilVendedorWidget> {
                               BoxShadow(
                                 blurRadius: 15,
                                 color: Colors.black26,
-                                offset: Offset(0,5),
+                                offset: Offset(0, 5),
                               )
                             ],
                           ),
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-
                               Icon(
                                 Icons.qr_code_2,
                                 size: 75,
                                 color: Colors.white,
                               ),
-
                               SizedBox(height: 10),
-
                               Text(
                                 "QR de mi catálogo",
                                 style: TextStyle(
@@ -216,7 +228,6 @@ class _PerfilVendedorWidgetState extends State<PerfilVendedorWidget> {
                                   color: Colors.white,
                                 ),
                               ),
-
                               Text(
                                 "Compártelo con tus clientes",
                                 style: TextStyle(
@@ -243,24 +254,21 @@ class _PerfilVendedorWidgetState extends State<PerfilVendedorWidget> {
                         "Añadir nuevo producto",
                         () => context.pushNamed('AnadirProducto')),
 
+                    _menuOption(Icons.bar_chart_outlined, "Estadísticas",
+                        () => _abrirEstadisticas()),
+
                     const SizedBox(height: 25),
 
                     _sectionTitle("Configuración"),
 
-                    _menuOption(
-                        Icons.notifications_outlined,
-                        "Notificaciones",
+                    _menuOption(Icons.notifications_outlined, "Notificaciones",
                         () => context.pushNamed('NotificationsWidget')),
 
-                    _menuOption(
-                        Icons.security_outlined,
-                        "Privacidad y seguridad",
-                        () {}),
+                    _menuOption(Icons.security_outlined,
+                        "Privacidad y seguridad", () {}),
 
-                    _menuOption(
-                        Icons.settings_outlined,
-                        "Configuración general",
-                        () {}),
+                    _menuOption(Icons.settings_outlined,
+                        "Configuración general", () {}),
 
                     const SizedBox(height: 35),
 
@@ -325,7 +333,7 @@ class _PerfilVendedorWidgetState extends State<PerfilVendedorWidget> {
               BoxShadow(
                 blurRadius: 10,
                 color: Colors.black12,
-                offset: Offset(0,4),
+                offset: Offset(0, 4),
               )
             ],
           ),

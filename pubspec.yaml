@@ -90,7 +90,7 @@ dependencies:
   image_picker: ^1.2.0
   image: ^4.5.4
   qr_flutter: ^4.1.0  # ← AGREGAR ESTA LÍNEA
-
+  webview_flutter: ^4.7.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -117,7 +117,7 @@ flutter_launcher_icons:
   ios: true
   web:
     generate: true
-  image_path: 'assets/images/app_launcher_icon.png'
+  image_path: 'assets/images/logo_price_v2.png'
   adaptive_icon_background: '#00000000'
   adaptive_icon_foreground: 'assets/images/adaptive_foreground_icon.png'
 

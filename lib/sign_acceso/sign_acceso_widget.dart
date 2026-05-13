@@ -130,7 +130,7 @@ class _SignAccesoWidgetState extends State<SignAccesoWidget> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
                                   child: Image.asset(
-                                    'assets/images/logo_price_v1.png',
+                                    'assets/images/logo_price_v2.png',
                                     width: 323.3,
                                     height: 252.3,
                                     fit: BoxFit.cover,
