@@ -119,21 +119,24 @@ class _ProfileUserWidgetState extends State<ProfileUserWidget> {
                   child: Row(
                     children: [
                       // FOTO
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: CircleAvatar(
+                        radius: 42,
+                        backgroundColor: Colors.white,
                         child: CircleAvatar(
-                          radius: 42,
-                          backgroundColor: Colors.white,
-                          child: CircleAvatar(
-                            radius: 38,
-                            backgroundImage: NetworkImage(
-                              'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
-                            ),
+                          radius: 38,
+                          backgroundColor: Colors.grey.shade300,
+                          child: Icon(
+                            Icons.person,
+                            size: 40,
+                            color: Colors.grey,
                           ),
                         ),
                       ),
+                    ),
 
                       // INFO USUARIO
                       Expanded(
