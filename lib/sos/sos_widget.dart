@@ -34,62 +34,125 @@ class _SosWidgetState extends State<SosWidget> {
     super.dispose();
   }
 
+  /// FUNCION LLAMAR
   Future<void> llamarNumero(String numero) async {
-    PermissionStatus status = await Permission.phone.request();
+    try {
 
-    if (status.isGranted) {
-      final Uri url = Uri.parse("tel:$numero");
+      /// PEDIR PERMISO
+      PermissionStatus status =
+          await Permission.phone.request();
 
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url);
+      if (!status.isGranted) {
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Permiso de llamadas denegado",
+            ),
+          ),
+        );
+
+        return;
       }
-    } else {
-      print("Permiso de llamada denegado");
+
+      /// ABRIR APP DE LLAMADAS
+      final Uri telefonoUri = Uri(
+        scheme: 'tel',
+        path: numero,
+      );
+
+      if (await canLaunchUrl(telefonoUri)) {
+
+        await launchUrl(
+          telefonoUri,
+          mode: LaunchMode.externalApplication,
+        );
+
+      } else {
+
+        throw 'No se pudo abrir la app de llamadas';
+      }
+
+    } catch (e) {
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Error al llamar: $e",
+          ),
+        ),
+      );
     }
   }
 
-  Widget emergencyCard(
-      Color iconColor, IconData icon, String title, String contact, String numero) {
+  /// CARD EMERGENCIA
+  Widget emergencyCard({
+    required Color iconColor,
+    required IconData icon,
+    required String title,
+    required String contact,
+    required String numero,
+  }) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
+      padding: const EdgeInsets.only(bottom: 18),
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: Color(0xFF223844),
-          borderRadius: BorderRadius.circular(18),
+          color: const Color(0xFF1B3440),
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              blurRadius: 15,
-              color: Colors.black26,
-              offset: Offset(0, 6),
-            )
+              color: Colors.black.withOpacity(.18),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
           ],
         ),
         child: Row(
           children: [
+
+            /// ICONO
             Container(
-              width: 44,
-              height: 44,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
-                color: iconColor,
-                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    iconColor.withOpacity(.8),
+                    iconColor,
+                  ],
+                ),
+                borderRadius:
+                    BorderRadius.circular(18),
               ),
-              child: Icon(icon, color: Colors.white, size: 22),
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 28,
+              ),
             ),
-            SizedBox(width: 14),
+
+            const SizedBox(width: 16),
+
+            /// INFO
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
+
                   Text(
                     title,
                     style: GoogleFonts.karla(
                       color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+
+                  const SizedBox(height: 4),
+
                   Text(
                     contact,
                     style: GoogleFonts.karla(
@@ -100,24 +163,28 @@ class _SosWidgetState extends State<SosWidget> {
                 ],
               ),
             ),
-            GestureDetector(
+
+            /// BOTON LLAMAR
+            InkWell(
+              borderRadius:
+                  BorderRadius.circular(100),
               onTap: () {
                 llamarNumero(numero);
               },
               child: Container(
-                width: 36,
-                height: 36,
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.2),
+                  color: iconColor.withOpacity(.15),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.phone,
+                  Icons.phone_in_talk_rounded,
                   color: iconColor,
-                  size: 18,
+                  size: 24,
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -129,146 +196,258 @@ class _SosWidgetState extends State<SosWidget> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
-        FocusManager.instance.primaryFocus?.unfocus();
+        FocusManager.instance.primaryFocus
+            ?.unfocus();
       },
+
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: Color(0xFF0E2A36),
-        appBar: AppBar(
-          backgroundColor: Color(0xFF0E2A36),
-          elevation: 0,
-          leading: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30,
-            buttonSize: 46,
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-              color: Colors.white,
-              size: 20,
-            ),
-            onPressed: () async {
-              context.pop();
-            },
-          ),
-          title: Text(
-            "Contactos de Emergencia",
-            style: GoogleFonts.karla(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
-            ),
-          ),
-          centerTitle: true,
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 20),
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: 26),
-                  decoration: BoxDecoration(
-                    color: Color(0xFF223844),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 20,
-                        color: Colors.black38,
-                        offset: Offset(0, 8),
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFFFF7A5A),
-                              Color(0xFFFF4D4D)
-                            ],
-                          ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.sos,
-                          color: Colors.white,
-                          size: 32,
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                      Text(
-                        "En Caso de Emergencia",
-                        style: GoogleFonts.karla(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        "Toca el icono de teléfono para llamar",
-                        style: GoogleFonts.karla(
-                          color: Colors.white60,
-                          fontSize: 13,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 24),
+        backgroundColor:
+            const Color(0xFF0B1F2A),
 
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
+        body: Stack(
+          children: [
+
+            /// FONDO
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF07141C),
+                    Color(0xFF102733),
+                    Color(0xFF0B1F2A),
+                  ],
+                ),
+              ),
+            ),
+
+            SafeArea(
+              child: Column(
+                children: [
+
+                  /// APPBAR CUSTOM
+                  Padding(
+                    padding:
+                        const EdgeInsets.fromLTRB(
+                            16, 10, 16, 0),
+                    child: Row(
                       children: [
 
-                        emergencyCard(
-                            Color(0xFF1E88E5),
-                            Icons.shield,
-                            "Policía",
-                            "Contacto: 123",
-                            "123"),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white
+                                .withOpacity(.08),
+                            borderRadius:
+                                BorderRadius
+                                    .circular(16),
+                          ),
+                          child:
+                              FlutterFlowIconButton(
+                            borderColor:
+                                Colors.transparent,
+                            borderRadius: 16,
+                            borderWidth: 0,
+                            buttonSize: 48,
+                            icon: const Icon(
+                              Icons
+                                  .arrow_back_ios_new,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            onPressed: () async {
+                              context.pop();
+                            },
+                          ),
+                        ),
 
-                        emergencyCard(
-                            Color(0xFFE53935),
-                            Icons.local_fire_department,
-                            "Bomberos",
-                            "Contacto: 123",
-                            "123"),
+                        const Spacer(),
 
-                        emergencyCard(
-                            Color(0xFF43A047),
-                            Icons.medical_services,
-                            "Ambulancia / Emergencia Médica",
-                            "Contacto: 123",
-                            "123"),
+                        Text(
+                          "Emergency",
+                          style:
+                              GoogleFonts.karla(
+                            color: Colors.white,
+                            fontWeight:
+                                FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        ),
 
-                        emergencyCard(
-                            Color(0xFFFFA000),
-                            Icons.support_agent,
-                            "Defensa Civil / Rescate",
-                            "Contacto: 911",
-                            "911"),
+                        const Spacer(),
 
-                        emergencyCard(
-                            Color(0xFFD32F2F),
-                            Icons.favorite,
-                            "Cruz Roja",
-                            "Contacto: 911",
-                            "911"),
-
-                        SizedBox(height: 40)
+                        const SizedBox(width: 48),
                       ],
                     ),
                   ),
-                )
-              ],
+
+                  const SizedBox(height: 28),
+
+                  /// CARD PRINCIPAL SOS
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(
+                            horizontal: 20),
+                    child: Container(
+                      width: double.infinity,
+                      padding:
+                          const EdgeInsets.symmetric(
+                        vertical: 30,
+                        horizontal: 20,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient:
+                            const LinearGradient(
+                          colors: [
+                            Color(0xFFFF5F6D),
+                            Color(0xFFFF3D54),
+                          ],
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(
+                                30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.red
+                                .withOpacity(.35),
+                            blurRadius: 20,
+                            offset:
+                                const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+
+                          Container(
+                            width: 90,
+                            height: 90,
+                            decoration: BoxDecoration(
+                              color: Colors.white
+                                  .withOpacity(.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.sos_rounded,
+                              color: Colors.white,
+                              size: 46,
+                            ),
+                          ),
+
+                          const SizedBox(height: 18),
+
+                          Text(
+                            "Emergency Contacts",
+                            style:
+                                GoogleFonts.karla(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight:
+                                  FontWeight.bold,
+                            ),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          Text(
+                            "Tap the phone icon to open the call app instantly",
+                            textAlign:
+                                TextAlign.center,
+                            style:
+                                GoogleFonts.karla(
+                              color: Colors.white70,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 28),
+
+                  /// LISTA
+                  Expanded(
+                    child:
+                        SingleChildScrollView(
+                      padding:
+                          const EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
+                      child: Column(
+                        children: [
+
+                          emergencyCard(
+                            iconColor:
+                                const Color(
+                                    0xFF1E88E5),
+                            icon: Icons.shield,
+                            title: "Police",
+                            contact:
+                                "Emergency Contact: 123",
+                            numero: "123",
+                          ),
+
+                          emergencyCard(
+                            iconColor:
+                                const Color(
+                                    0xFFE53935),
+                            icon: Icons
+                                .local_fire_department,
+                            title: "Firefighters",
+                            contact:
+                                "Emergency Contact: 119",
+                            numero: "119",
+                          ),
+
+                          emergencyCard(
+                            iconColor:
+                                const Color(
+                                    0xFF43A047),
+                            icon:
+                                Icons.medical_services,
+                            title:
+                                "Medical Emergency",
+                            contact:
+                                "Emergency Contact: 125",
+                            numero: "125",
+                          ),
+
+                          emergencyCard(
+                            iconColor:
+                                const Color(
+                                    0xFFFFA000),
+                            icon:
+                                Icons.support_agent,
+                            title:
+                                "Civil Defense",
+                            contact:
+                                "Emergency Contact: 144",
+                            numero: "144",
+                          ),
+
+                          emergencyCard(
+                            iconColor:
+                                const Color(
+                                    0xFFD32F2F),
+                            icon: Icons.favorite,
+                            title: "Red Cross",
+                            contact:
+                                "Emergency Contact: 132",
+                            numero: "132",
+                          ),
+
+                          const SizedBox(
+                              height: 40),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

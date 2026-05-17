@@ -7,7 +7,7 @@
 
 	<!-- PERMISOS PARA LA GALERÍA -->
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>La app necesita acceder a la galería para seleccionar imágenes de productos</string>
+	<string>La app necesita acceder a la galería para seleccionar imágenes</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>La app necesita guardar imágenes en la galería</string>
 

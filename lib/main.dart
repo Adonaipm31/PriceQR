@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'flutter_flow/flutter_flow_util.dart';
-
-// ✅ NUEVO IMPORT
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {

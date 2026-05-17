@@ -44,44 +44,87 @@ class _ProfileUserWidgetState extends State<ProfileUserWidget> {
       context.goNamed(LoginWidget.routeName);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al cerrar sesión: $e')),
+        SnackBar(
+          content: Text('Error al cerrar sesión: $e'),
+        ),
       );
     }
   }
 
-  void _showComingSoonModal(BuildContext context,
-      {String featureName = 'esta función'}) {
+  void _showComingSoonModal(
+    BuildContext context, {
+    String featureName = 'esta función',
+  }) {
     showDialog(
       context: context,
       barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
-          insetPadding: EdgeInsets.all(20),
+          insetPadding: const EdgeInsets.all(20),
           child: Container(
             width: double.infinity,
-            constraints: BoxConstraints(maxWidth: 400),
+            constraints: const BoxConstraints(maxWidth: 400),
             decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).secondaryBackground,
-              borderRadius: BorderRadius.circular(20),
+              color:
+                  FlutterFlowTheme.of(context).secondaryBackground,
+              borderRadius: BorderRadius.circular(24),
             ),
             child: Padding(
-              padding: EdgeInsets.all(30),
+              padding: const EdgeInsets.all(30),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.rocket_launch_outlined, size: 40),
-                  SizedBox(height: 20),
-                  Text('¡Próximamente! 🚀'),
-                  SizedBox(height: 15),
-                  Text('$featureName estará disponible próximamente.'),
-                  SizedBox(height: 25),
+
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withOpacity(.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.rocket_launch_rounded,
+                      size: 42,
+                      color: Colors.orange,
+                    ),
+                  ),
+
+                  const SizedBox(height: 22),
+
+                  Text(
+                    '¡Próximamente! 🚀',
+                    style: GoogleFonts.karla(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  Text(
+                    '$featureName estará disponible próximamente.',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.karla(
+                      fontSize: 15,
+                      color: Colors.grey,
+                    ),
+                  ),
+
+                  const SizedBox(height: 28),
+
                   FFButtonWidget(
                     onPressed: () => Navigator.pop(context),
-                    text: '¡Entendido!',
+                    text: 'Entendido',
                     options: FFButtonOptions(
                       width: double.infinity,
-                      height: 50,
+                      height: 52,
+                      color: const Color(0xFF4F46E5),
+                      textStyle: GoogleFonts.karla(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
                 ],
@@ -97,166 +140,363 @@ class _ProfileUserWidgetState extends State<ProfileUserWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor:
+          FlutterFlowTheme.of(context).primaryBackground,
+
       body: Stack(
         children: [
-          Column(
-            children: [
-              // 🔥 HEADER CON USUARIO (CORREGIDO)
-              Container(
-                width: double.infinity,
-                height: 190,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF1E1E2D),
-                      Color(0xFF2A2A40),
-                    ],
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(20, 50, 20, 0),
-                  child: Row(
-                    children: [
-                      // FOTO
-                    Container(
+
+          /// FONDO
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF111827),
+                  Color(0xFF1F2937),
+                  Color(0xFFF5F7FA),
+                  Color(0xFFF5F7FA),
+                ],
+                stops: [0, .25, .25, 1],
+              ),
+            ),
+          ),
+
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+
+                  /// HEADER PREMIUM
+                  Padding(
+                    padding:
+                        const EdgeInsets.fromLTRB(22, 24, 22, 0),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: CircleAvatar(
-                        radius: 42,
-                        backgroundColor: Colors.white,
-                        child: CircleAvatar(
-                          radius: 38,
-                          backgroundColor: Colors.grey.shade300,
-                          child: Icon(
-                            Icons.person,
-                            size: 40,
-                            color: Colors.grey,
-                          ),
+                        borderRadius:
+                            BorderRadius.circular(30),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF1E1E2D),
+                            Color(0xFF2D3250),
+                          ],
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(.18),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
                       ),
-                    ),
 
-                      // INFO USUARIO
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 14),
-                          child: FutureBuilder<DocumentSnapshot>(
-                            future: FirebaseFirestore.instance
-                                .collection('usuarios')
-                                .doc(FirebaseAuth.instance.currentUser?.uid)
-                                .get(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return CircularProgressIndicator(
-                                    color: Colors.white);
-                              }
+                      child: FutureBuilder<DocumentSnapshot>(
+                        future: FirebaseFirestore.instance
+                            .collection('usuarios')
+                            .doc(FirebaseAuth
+                                .instance.currentUser?.uid)
+                            .get(),
+                        builder: (context, snapshot) {
 
-                              final userData =
-                                  snapshot.data?.data() as Map<String, dynamic>?;
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const SizedBox(
+                              height: 100,
+                              child: Center(
+                                child:
+                                    CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            );
+                          }
 
-                              final nombre = userData?['nombre'] ?? 'Usuario';
-                              final correo = userData?['correo'] ??
-                                  FirebaseAuth.instance.currentUser?.email ??
+                          final userData =
+                              snapshot.data?.data()
+                                  as Map<String, dynamic>?;
+
+                          final nombre =
+                              userData?['nombre'] ??
+                                  'Usuario';
+
+                          final correo =
+                              userData?['correo'] ??
+                                  FirebaseAuth.instance
+                                      .currentUser?.email ??
                                   '';
 
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                          final photoUrl =
+                              userData?['photoUrl'];
+
+                          return Row(
+                            children: [
+
+                              /// FOTO
+                              Stack(
                                 children: [
-                                  Text(
-                                    nombre,
-                                    style: GoogleFonts.karla(
-                                      color: Colors.amber,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+
+                                  Container(
+                                    padding:
+                                        const EdgeInsets.all(3),
+                                    decoration:
+                                        const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient:
+                                          LinearGradient(
+                                        colors: [
+                                          Colors.amber,
+                                          Colors.orange,
+                                        ],
+                                      ),
+                                    ),
+                                    child: CircleAvatar(
+                                      radius: 42,
+                                      backgroundColor:
+                                          Colors.white,
+                                      backgroundImage:
+                                          photoUrl != null
+                                              ? NetworkImage(
+                                                  photoUrl)
+                                              : null,
+                                      child:
+                                          photoUrl == null
+                                              ? const Icon(
+                                                  Icons.person,
+                                                  size: 42,
+                                                  color:
+                                                      Colors.grey,
+                                                )
+                                              : null,
                                     ),
                                   ),
-                                  SizedBox(height: 6),
-                                  Text(
-                                    correo,
-                                    style: GoogleFonts.karla(
-                                      color: Colors.white70,
-                                      fontSize: 14,
+
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Container(
+                                      width: 18,
+                                      height: 18,
+                                      decoration:
+                                          BoxDecoration(
+                                        color: Colors.green,
+                                        shape:
+                                            BoxShape.circle,
+                                        border: Border.all(
+                                          color:
+                                              Colors.white,
+                                          width: 2,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
-                              );
-                            },
+                              ),
+
+                              const SizedBox(width: 18),
+
+                              /// INFO
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment
+                                          .start,
+                                  children: [
+
+                                    Text(
+                                      nombre,
+                                      style:
+                                          GoogleFonts.karla(
+                                        color:
+                                            Colors.white,
+                                        fontSize: 22,
+                                        fontWeight:
+                                            FontWeight.bold,
+                                      ),
+                                    ),
+
+                                    const SizedBox(
+                                        height: 6),
+
+                                    Text(
+                                      correo,
+                                      style:
+                                          GoogleFonts.karla(
+                                        color:
+                                            Colors.white70,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+
+                                    const SizedBox(
+                                        height: 14),
+
+                                    Container(
+                                      padding:
+                                          const EdgeInsets
+                                              .symmetric(
+                                        horizontal: 14,
+                                        vertical: 8,
+                                      ),
+                                      decoration:
+                                          BoxDecoration(
+                                        color: Colors.white
+                                            .withOpacity(
+                                                .12),
+                                        borderRadius:
+                                            BorderRadius
+                                                .circular(
+                                                    30),
+                                      ),
+                                      child: Text(
+                                        'User Traveler ✈️',
+                                        style:
+                                            GoogleFonts
+                                                .karla(
+                                          color:
+                                              Colors.amber,
+                                          fontWeight:
+                                              FontWeight
+                                                  .bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 28),
+
+                  /// MENU
+                  _modernMenuCard(
+                    title: 'Edit Profile',
+                    subtitle:
+                        'Manage your personal information',
+                    icon: Icons.person_outline,
+                    color: const Color(0xFF4F46E5),
+                    onTap: () => context.pushNamed(
+                      EditarPerfilUsuarioWidget.routeName,
+                    ),
+                  ),
+
+                  _modernMenuCard(
+                    title: 'Notifications',
+                    subtitle:
+                        'Customize alerts and reminders',
+                    icon: Icons.notifications_none,
+                    color: Colors.orange,
+                    onTap: () =>
+                        _showComingSoonModal(context),
+                  ),
+
+                  _modernMenuCard(
+                    title: 'About App',
+                    subtitle:
+                        'Version, policies and more',
+                    icon: Icons.info_outline,
+                    color: Colors.blue,
+                    onTap: () =>
+                        _showComingSoonModal(context),
+                  ),
+
+                  _modernMenuCard(
+                    title: 'Support',
+                    subtitle:
+                        'Need help? Contact us',
+                    icon: Icons.headset_mic_outlined,
+                    color: Colors.green,
+                    onTap: () =>
+                        _showComingSoonModal(context),
+                  ),
+
+                  _modernMenuCard(
+                    title: 'AI Assistant',
+                    subtitle:
+                        'Chat with artificial intelligence',
+                    icon: Icons.smart_toy_outlined,
+                    color: Colors.purple,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const ChatScreen(),
+                        ),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  /// LOGOUT
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(
+                            horizontal: 24),
+                    child: Container(
+                      width: double.infinity,
+                      height: 58,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color.fromARGB(255, 75, 147, 255),
+                            Color.fromARGB(255, 107, 166, 255),
+                          ],
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(18),
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                Colors.lightBlue.withOpacity(.25),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          )
+                        ],
+                      ),
+                      child: FFButtonWidget(
+                        onPressed: _signOut,
+                        text: 'Log Out',
+                        icon: const Icon(
+                          Icons.logout,
+                          color: Colors.white,
+                        ),
+                        options: FFButtonOptions(
+                          width: double.infinity,
+                          height: 58,
+                          color: Colors.transparent,
+                          elevation: 0,
+                          borderRadius:
+                              BorderRadius.circular(18),
+                          textStyle:
+                              GoogleFonts.karla(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight:
+                                FontWeight.bold,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 10),
-
-              _buildMenuCard(
-                title: 'Edit Profile',
-                icon: Icons.edit,
-                iconColor: Colors.black,
-                onTap: () =>
-                    context.pushNamed(EditarPerfilUsuarioWidget.routeName),
-              ),
-
-              _buildMenuCard(
-                title: 'Notification Settings',
-                icon: Icons.notifications,
-                iconColor: Colors.orange,
-                onTap: () => _showComingSoonModal(context),
-              ),
-
-              _buildMenuCard(
-                title: 'About the App',
-                icon: Icons.info,
-                iconColor: Colors.blue,
-                onTap: () => _showComingSoonModal(context),
-              ),
-
-              _buildMenuCard(
-                title: 'Contact Support',
-                icon: Icons.support,
-                iconColor: Colors.black,
-                onTap: () => _showComingSoonModal(context),
-              ),
-
-              // 🤖 BOTÓN CHAT IA
-              _buildMenuCard(
-                title: 'Chat con IA',
-                icon: Icons.smart_toy,
-                iconColor: Colors.blue,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ChatScreen(),
                     ),
-                  );
-                },
-              ),
-
-              Padding(
-                padding: EdgeInsets.only(top: 60),
-                child: FFButtonWidget(
-                  onPressed: _signOut,
-                  text: 'Log Out',
-                  icon: Icon(Icons.logout),
-                  options: FFButtonOptions(
-                    width: 170,
-                    height: 52,
                   ),
-                ),
+
+                  const SizedBox(height: 120),
+                ],
               ),
-            ],
+            ),
           ),
 
           wrapWithModel(
             model: _model.navBarModel,
-            updateCallback: () => safeSetState(() {}),
+            updateCallback: () => setState(() {}),
             child: NavBarWidget(),
           ),
         ],
@@ -264,30 +504,86 @@ class _ProfileUserWidgetState extends State<ProfileUserWidget> {
     );
   }
 
-  Widget _buildMenuCard({
+  Widget _modernMenuCard({
     required String title,
+    required String subtitle,
     required IconData icon,
-    required Color iconColor,
+    required Color color,
     VoidCallback? onTap,
   }) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+      padding:
+          const EdgeInsets.fromLTRB(22, 0, 22, 18),
       child: InkWell(
+        borderRadius: BorderRadius.circular(22),
         onTap: onTap,
         child: Container(
-          height: 70,
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius:
+                BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(.04),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: Row(
             children: [
-              SizedBox(width: 16),
-              Icon(icon, color: iconColor),
-              SizedBox(width: 16),
-              Expanded(child: Text(title)),
-              Icon(Icons.arrow_forward_ios),
-              SizedBox(width: 16),
+
+              Container(
+                width: 55,
+                height: 55,
+                decoration: BoxDecoration(
+                  color: color.withOpacity(.12),
+                  borderRadius:
+                      BorderRadius.circular(18),
+                ),
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 28,
+                ),
+              ),
+
+              const SizedBox(width: 16),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                  children: [
+
+                    Text(
+                      title,
+                      style: GoogleFonts.karla(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.karla(
+                        fontSize: 13,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 18,
+                color: Colors.grey,
+              ),
             ],
           ),
         ),
