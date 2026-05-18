@@ -3,7 +3,6 @@ import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'sos_model.dart';
 export 'sos_model.dart';
 
@@ -38,40 +37,15 @@ class _SosWidgetState extends State<SosWidget> {
   Future<void> llamarNumero(String numero) async {
     try {
 
-      /// PEDIR PERMISO
-      PermissionStatus status =
-          await Permission.phone.request();
-
-      if (!status.isGranted) {
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "Permiso de llamadas denegado",
-            ),
-          ),
-        );
-
-        return;
-      }
-
-      /// ABRIR APP DE LLAMADAS
       final Uri telefonoUri = Uri(
         scheme: 'tel',
         path: numero,
       );
 
-      if (await canLaunchUrl(telefonoUri)) {
-
-        await launchUrl(
-          telefonoUri,
-          mode: LaunchMode.externalApplication,
-        );
-
-      } else {
-
-        throw 'No se pudo abrir la app de llamadas';
-      }
+      await launchUrl(
+        telefonoUri,
+        mode: LaunchMode.externalApplication,
+      );
 
     } catch (e) {
 
