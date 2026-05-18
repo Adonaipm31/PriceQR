@@ -19,16 +19,14 @@ class _HomeWidgetState extends State<HomeWidget>
 
   final List<Map<String, String>> hotels = [
     {
-      "image":
-          "assets/images/hotel1.png",
+      "image": "assets/images/hotel1.png",
       "title": "InterContinental Hotel",
       "location": "Cartagena, Colombia",
       "price": "\$160/night",
       "rating": "4.7"
     },
     {
-      "image":
-          "assets/images/hotel2.jpg",
+      "image": "assets/images/hotel2.jpg",
       "title": "Hyatt Regency Hotel",
       "location": "Bocagrande",
       "price": "\$195/night",
@@ -38,8 +36,7 @@ class _HomeWidgetState extends State<HomeWidget>
 
   final List<Map<String, String>> beachs = [
     {
-      "image":
-          "assets/images/beach1.jpg",
+      "image": "assets/images/beach1.jpg",
       "title": "Casa Córdoba Barú",
       "location": "Barú Island",
       "price": "\$140/night",
@@ -49,8 +46,7 @@ class _HomeWidgetState extends State<HomeWidget>
 
   final List<Map<String, String>> restaurants = [
     {
-      "image":
-          "assets/images/restaurant1.jpg",
+      "image": "assets/images/restaurant1.jpg",
       "title": "Restaurant-Bar San Nicolás",
       "location": "Center - Getsemaní",
       "price": "\$10-31/avg",
@@ -86,7 +82,7 @@ class _HomeWidgetState extends State<HomeWidget>
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(20),
             ),
-            child: Image.network(
+            child: Image.asset(
               item["image"]!,
               width: double.infinity,
               height: 220,
@@ -201,14 +197,14 @@ class _HomeWidgetState extends State<HomeWidget>
                           BorderRadius.circular(18),
                     ),
                     child: TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Search places...',
-                        prefixIcon: const Icon(
+                        prefixIcon: Icon(
                           Icons.search_rounded,
                         ),
                         border: InputBorder.none,
                         contentPadding:
-                            const EdgeInsets.symmetric(
+                            EdgeInsets.symmetric(
                           vertical: 16,
                         ),
                       ),
