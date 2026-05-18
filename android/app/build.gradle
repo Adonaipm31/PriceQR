@@ -6,6 +6,7 @@ plugins {
 
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
+
 if (localPropertiesFile.exists()) {
     localPropertiesFile.withReader('UTF-8') { reader ->
         localProperties.load(reader)
@@ -13,37 +14,58 @@ if (localPropertiesFile.exists()) {
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+
 if (flutterVersionCode == null) {
     flutterVersionCode = '1'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
+
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
+
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
+
     namespace "com.SynergyLabs.gatedcommunity"
-    compileSdkVersion 36  // ✅ Subimos a 35 para soportar Android 14 (BAKLAVA)
+
+    compileSdkVersion 36
+
+    // NOMBRE DEL APK
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "PriceQR-${variant.buildType.name}.apk"
+        }
+    }
 
     defaultConfig {
+
         applicationId "com.SynergyLabs.gatedcommunity"
+
         minSdkVersion flutter.minSdkVersion
+
         targetSdkVersion 36
+
         versionCode flutterVersionCode.toInteger()
+
         versionName flutterVersionName
+
         multiDexEnabled true
     }
 
     compileOptions {
+
         coreLibraryDesugaringEnabled true
+
         sourceCompatibility JavaVersion.VERSION_17
+
         targetCompatibility JavaVersion.VERSION_17
     }
 
@@ -52,23 +74,37 @@ android {
     }
 
     lintOptions {
+
         disable 'InvalidPackage'
+
         checkReleaseBuilds false
     }
 
     signingConfigs {
+
         release {
+
             keyAlias keystoreProperties['keyAlias']
+
             keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+
+            storeFile keystoreProperties['storeFile']
+                    ? file(keystoreProperties['storeFile'])
+                    : null
+
             storePassword keystoreProperties['storePassword']
         }
     }
 
     buildTypes {
+
         release {
+
             signingConfig signingConfigs.debug
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android.txt'
+            ), 'proguard-rules.pro'
         }
     }
 }
@@ -78,10 +114,17 @@ flutter {
 }
 
 dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+
+    coreLibraryDesugaring(
+            'com.android.tools:desugar_jdk_libs:2.1.4'
+    )
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:2.1.0"
 
-    implementation platform('com.google.firebase:firebase-bom:33.4.0')
+    implementation platform(
+            'com.google.firebase:firebase-bom:33.4.0'
+    )
+
     implementation 'com.google.firebase:firebase-analytics'
 }
 
