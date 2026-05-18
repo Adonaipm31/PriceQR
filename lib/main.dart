@@ -10,10 +10,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ CARGAR .env (ANTES DE TODO)
+  // CARGAR .env (ANTES DE TODO)
   await dotenv.load(fileName: ".env");
 
-  // ✅ INICIALIZACIÓN ROBUSTA PARA ANDROID
+  // INICIALIZACIÓN ROBUSTA PARA ANDROID
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'qr_model.dart';
 export 'qr_model.dart';
 
-/// New Component Gen
 class QrWidget extends StatefulWidget {
   const QrWidget({super.key});
 

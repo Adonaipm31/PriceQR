@@ -51,6 +51,37 @@ class _EditarPerfilUsuarioWidgetState
 
     _model.passwordTextController2 ??= TextEditingController();
     _model.passwordFocusNode2 ??= FocusNode();
+
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) return;
+
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (doc.exists) {
+        final data = doc.data();
+
+        setState(() {
+          _photoUrl = data?['photoUrl'];
+
+          _model.yourNameTextController?.text =
+              data?['name'] ?? '';
+
+          _model.emailAddressTextController?.text =
+              data?['email'] ?? '';
+        });
+      }
+    } catch (e) {
+      print("Error cargando usuario: $e");
+    }
   }
 
   @override
@@ -77,7 +108,6 @@ class _EditarPerfilUsuarioWidgetState
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Wrap(
                 children: [
-
                   ListTile(
                     leading: Container(
                       padding: const EdgeInsets.all(10),
@@ -141,7 +171,7 @@ class _EditarPerfilUsuarioWidgetState
       if (source == ImageSource.camera) {
         permission = await Permission.camera.request();
       } else {
-        permission = await Permission.photos.request();
+        permission = await Permission.storage.request();
       }
 
       if (!permission.isGranted) {
@@ -214,6 +244,41 @@ class _EditarPerfilUsuarioWidgetState
     }
   }
 
+  Future<void> _saveProfile() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) return;
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set({
+        'name':
+            _model.yourNameTextController.text,
+        'email':
+            _model.emailAddressTextController.text,
+        'photoUrl': _photoUrl,
+        'updatedAt':
+            FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Perfil actualizado correctamente",
+          ),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error: $e"),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -222,8 +287,6 @@ class _EditarPerfilUsuarioWidgetState
 
       body: Stack(
         children: [
-
-          /// FONDO
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -246,14 +309,11 @@ class _EditarPerfilUsuarioWidgetState
             child: SingleChildScrollView(
               child: Column(
                 children: [
-
-                  /// APPBAR
                   Padding(
                     padding:
                         const EdgeInsets.fromLTRB(16, 10, 16, 0),
                     child: Row(
                       children: [
-
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(.12),
@@ -296,7 +356,6 @@ class _EditarPerfilUsuarioWidgetState
 
                   const SizedBox(height: 30),
 
-                  /// CARD
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 22),
@@ -317,12 +376,9 @@ class _EditarPerfilUsuarioWidgetState
                       ),
                       child: Column(
                         children: [
-
-                          /// FOTO PERFIL
                           Stack(
                             alignment: Alignment.bottomRight,
                             children: [
-
                               Container(
                                 padding: const EdgeInsets.all(4),
                                 decoration: const BoxDecoration(
@@ -378,16 +434,6 @@ class _EditarPerfilUsuarioWidgetState
                                       ],
                                     ),
                                     shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.blue
-                                            .withOpacity(.3),
-                                        blurRadius: 10,
-                                        offset:
-                                            const Offset(
-                                                0, 5),
-                                      ),
-                                    ],
                                   ),
                                   child: _isUploading
                                       ? const SizedBox(
@@ -411,19 +457,8 @@ class _EditarPerfilUsuarioWidgetState
                             ],
                           ),
 
-                          const SizedBox(height: 18),
-
-                          Text(
-                            "Change profile picture",
-                            style: GoogleFonts.karla(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-
                           const SizedBox(height: 35),
 
-                          /// NOMBRE
                           _modernInputField(
                             controller:
                                 _model
@@ -435,7 +470,6 @@ class _EditarPerfilUsuarioWidgetState
 
                           const SizedBox(height: 20),
 
-                          /// EMAIL
                           _modernInputField(
                             controller:
                                 _model
@@ -445,46 +479,8 @@ class _EditarPerfilUsuarioWidgetState
                                 Icons.email_outlined,
                           ),
 
-                          const SizedBox(height: 20),
-
-                          /// PASSWORD
-                          _modernPasswordField(
-                            controller:
-                                _model
-                                    .passwordTextController1!,
-                            label: "Password",
-                            visible:
-                                _model.passwordVisibility1,
-                            onTap: () => setState(
-                              () => _model
-                                      .passwordVisibility1 =
-                                  !_model
-                                      .passwordVisibility1,
-                            ),
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          /// CONFIRM PASSWORD
-                          _modernPasswordField(
-                            controller:
-                                _model
-                                    .passwordTextController2!,
-                            label:
-                                "Confirm Password",
-                            visible:
-                                _model.passwordVisibility2,
-                            onTap: () => setState(
-                              () => _model
-                                      .passwordVisibility2 =
-                                  !_model
-                                      .passwordVisibility2,
-                            ),
-                          ),
-
                           const SizedBox(height: 35),
 
-                          /// BOTON
                           Container(
                             width: double.infinity,
                             height: 58,
@@ -499,20 +495,9 @@ class _EditarPerfilUsuarioWidgetState
                               borderRadius:
                                   BorderRadius.circular(
                                       18),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.blue
-                                      .withOpacity(.25),
-                                  blurRadius: 14,
-                                  offset:
-                                      const Offset(0, 6),
-                                )
-                              ],
                             ),
                             child: FFButtonWidget(
-                              onPressed: () {
-                                print("Save pressed");
-                              },
+                              onPressed: _saveProfile,
                               text: 'Save Changes',
                               icon: const Icon(
                                 Icons.check_circle,
@@ -554,7 +539,6 @@ class _EditarPerfilUsuarioWidgetState
     );
   }
 
-  /// INPUT
   Widget _modernInputField({
     required TextEditingController controller,
     required String label,
@@ -584,61 +568,6 @@ class _EditarPerfilUsuarioWidgetState
             color: Colors.grey.shade700,
           ),
           labelText: label,
-          labelStyle: GoogleFonts.karla(
-            color: Colors.grey,
-            fontWeight: FontWeight.w500,
-          ),
-          border: InputBorder.none,
-        ),
-      ),
-    );
-  }
-
-  /// PASSWORD
-  Widget _modernPasswordField({
-    required TextEditingController controller,
-    required String label,
-    required bool visible,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: Colors.grey.withOpacity(.12),
-        ),
-      ),
-      child: TextFormField(
-        controller: controller,
-        obscureText: !visible,
-        style: GoogleFonts.karla(
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-        ),
-        decoration: InputDecoration(
-          contentPadding:
-              const EdgeInsets.symmetric(
-            vertical: 20,
-          ),
-          prefixIcon: Icon(
-            Icons.lock_outline,
-            color: Colors.grey.shade700,
-          ),
-          suffixIcon: InkWell(
-            onTap: onTap,
-            child: Icon(
-              visible
-                  ? Icons.visibility
-                  : Icons.visibility_off,
-              color: Colors.grey,
-            ),
-          ),
-          labelText: label,
-          labelStyle: GoogleFonts.karla(
-            color: Colors.grey,
-            fontWeight: FontWeight.w500,
-          ),
           border: InputBorder.none,
         ),
       ),

@@ -46,7 +46,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         key: scaffoldKey,
         body: Stack(
           children: [
-            // 🔹 FONDO CON IMAGEN
+            // FONDO CON IMAGEN
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -58,7 +58,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               ),
             ),
 
-            // 🔹 BLUR + OSCURECER
+            // BLUR + OSCURECER
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
               child: Container(
@@ -66,7 +66,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               ),
             ),
 
-            // 🔹 CARD CENTRADA
+            // CARD CENTRADA
             Center(
               child: Container(
                 width: double.infinity,
@@ -81,7 +81,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // 🔐 LOGIN
+                      // LOGIN
                       FFButtonWidget(
                         onPressed: () async {
                           context.pushNamed(SignAccesoWidget.routeName);
@@ -107,7 +107,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
                       const SizedBox(height: 12),
 
-                      // 🧾 SIGN UP
+                      // SIGN UP
                       FFButtonWidget(
                         onPressed: () async {
                           context.pushNamed(
@@ -146,7 +146,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
                       const SizedBox(height: 12),
 
-                      // 👤 GUEST
+                      // GUEST
                       FFButtonWidget(
                         onPressed: () async {
                           context.pushNamed(

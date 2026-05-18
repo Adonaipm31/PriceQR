@@ -522,7 +522,7 @@ class _SignAccesoWidgetState extends State<SignAccesoWidget> {
                             if (Navigator.of(context).canPop())
                               Navigator.of(context).pop();
 
-                            // 👇 Aquí va el nuevo bloque
+                            // Aquí va el nuevo bloque
                             final user = FirebaseAuth.instance.currentUser;
                             if (user == null) {
                               context.pushNamed(SignAccesoWidget.routeName);

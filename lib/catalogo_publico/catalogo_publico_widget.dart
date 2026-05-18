@@ -96,7 +96,7 @@ class _CatalogoPublicoWidgetState extends State<CatalogoPublicoWidget> {
         return;
       }
  
-      // ✅ OPCIÓN 2: Solo filtra por userId + orderBy, el filtro 'activo'
+      // OPCIÓN 2: Solo filtra por userId + orderBy, el filtro 'activo'
       // se aplica en memoria para evitar requerir índice compuesto en Firestore
       final productosSnapshot = await FirebaseFirestore.instance
           .collection('catalogo')
@@ -126,7 +126,7 @@ class _CatalogoPublicoWidgetState extends State<CatalogoPublicoWidget> {
     }
   }
  
-  // 💾 GUARDAR VENTA EN FIRESTORE
+  // GUARDAR VENTA EN FIRESTORE
   Future<void> _adquirirProductos() async {
     if (productosSeleccionados.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -284,7 +284,7 @@ class _CatalogoPublicoWidgetState extends State<CatalogoPublicoWidget> {
         title: Text('Catálogo - $nombreNegocio'),
         automaticallyImplyLeading: true,
       ),
-      // 🛒 BOTÓN FLOTANTE — solo visible cuando hay productos seleccionados
+      // BOTÓN FLOTANTE — solo visible cuando hay productos seleccionados
       floatingActionButton: productosSeleccionados.isNotEmpty
           ? FloatingActionButton.extended(
               onPressed: guardando ? null : _adquirirProductos,
@@ -334,7 +334,7 @@ class _CatalogoPublicoWidgetState extends State<CatalogoPublicoWidget> {
     );
   }
  
-  // 💰 INPUT PRESUPUESTO
+  // INPUT PRESUPUESTO
   Widget _buildPresupuestoInput() {
     return Padding(
       padding: EdgeInsets.all(16),
@@ -354,7 +354,7 @@ class _CatalogoPublicoWidgetState extends State<CatalogoPublicoWidget> {
     );
   }
  
-  // 📊 RESUMEN
+  // RESUMEN
   Widget _buildResumen() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
@@ -397,7 +397,7 @@ class _CatalogoPublicoWidgetState extends State<CatalogoPublicoWidget> {
       (p) => p['nombre'] == data['nombre'],
     );
  
-    // ✅ Solo marcar fuera de presupuesto si el producto NO está seleccionado
+    // Solo marcar fuera de presupuesto si el producto NO está seleccionado
     bool superaPresupuesto = !seleccionado &&
         presupuestoUsuario > 0 &&
         (totalSeleccionado + precio) > presupuestoUsuario;

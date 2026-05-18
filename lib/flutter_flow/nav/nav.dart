@@ -26,7 +26,7 @@ class AppStateNotifier extends ChangeNotifier {
   bool get loggedIn => _loggedIn;
   String? get userType => _userType;
 
-  // ✅ MÉTODOS PARA MANEJAR ESTADO DE AUTH
+  // MÉTODOS PARA MANEJAR ESTADO DE AUTH
   void setLoggedIn(bool loggedIn, {String? userType}) {
     _loggedIn = loggedIn;
     _userType = userType;
@@ -47,11 +47,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
       
-      // ✅ ELIMINADO COMPLETAMENTE EL BLOQUE REDIRECT - EVITA LOOPS
-      // redirect: (context, state) => null, // ❌ REMOVED
+      // ELIMINADO COMPLETAMENTE EL BLOQUE REDIRECT - EVITA LOOPS
+      // redirect: (context, state) => null, // REMOVED
       
       errorBuilder: (context, state) {
-        // ✅ ERROR BUILDER MEJORADO
+        // ERROR BUILDER MEJORADO
         return LoginWidget();
       },
       
@@ -60,7 +60,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: '_initialize',
           path: '/',
           builder: (context, _) => Builder(
-            // ✅ SPLASH SIMPLE - SIN LÓGICA CONDICIONAL COMPLEJA
+            // SPLASH SIMPLE - SIN LÓGICA CONDICIONAL COMPLEJA
             builder: (context) => Container(
               color: Colors.white,
               child: Image.asset(
@@ -80,14 +80,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         ),
 
         FFRoute(
-          name: 'GenerarQr',           // ← DEBE COINCIDIR CON routeName
-          path: '/generarQr',          // ← DEBE COINCIDIR CON routePath  
+          name: 'GenerarQr',           // DEBE COINCIDIR CON routeName
+          path: '/generarQr',          // DEBE COINCIDIR CON routePath  
           builder: (context, params) => GenerarQrWidget(),
         ),
 
         FFRoute(
-          name: 'MiCatalogo',           // ← DEBE COINCIDIR CON routeName
-          path: '/miCatalogo',          // ← DEBE COINCIDIR CON routePath
+          name: 'MiCatalogo',           // DEBE COINCIDIR CON routeName
+          path: '/miCatalogo',          // DEBE COINCIDIR CON routePath
           builder: (context, params) => MiCatalogoWidget(),
         ),
 

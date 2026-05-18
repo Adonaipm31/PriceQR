@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class GroqService {
 
   Future<String> enviarMensaje(String mensaje) async {
-    final apiKey = dotenv.env['GROQ_API_KEY']; // ✅ ahora viene del .env
+    final apiKey = dotenv.env['GROQ_API_KEY']; // ahora viene del .env
 
     if (apiKey == null || apiKey.isEmpty) {
       return "Error: API Key no encontrada";

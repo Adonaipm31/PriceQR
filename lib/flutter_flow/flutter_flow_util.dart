@@ -163,11 +163,10 @@ T? castToType<T>(dynamic value) {
   }
   switch (T) {
     case double:
-      // Doubles may be stored as ints in some cases.
+
       return value.toDouble() as T;
     case int:
-      // Likewise, ints may be stored as doubles. If this is the case
-      // (i.e. no decimal value), return the value as an int.
+
       if (value is num && value.toInt() == value) {
         return value.toInt() as T;
       }
@@ -237,7 +236,7 @@ bool responsiveVisibility({
 }
 
 const kTextValidatorUsernameRegex = r'^[a-zA-Z][a-zA-Z0-9_-]{2,16}$';
-// https://stackoverflow.com/a/201378
+
 const kTextValidatorEmailRegex =
     "^(?:[a-zA-Z0-9!#\$%&\'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#\$%&\'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-zA-Z0-9-]*[a-zA-Z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])\$";
 const kTextValidatorWebsiteRegex =
@@ -362,7 +361,7 @@ extension ListDivideExt<T extends Widget> on Iterable<T> {
 }
 
 extension StatefulWidgetExtensions on State<StatefulWidget> {
-  /// Check if the widget exist before safely setting state.
+  
   void safeSetState(VoidCallback fn) {
     if (mounted) {
       // ignore: invalid_use_of_protected_member
@@ -371,8 +370,6 @@ extension StatefulWidgetExtensions on State<StatefulWidget> {
   }
 }
 
-// For iOS 16 and below, set the status bar color to match the app's theme.
-// https://github.com/flutter/flutter/issues/41067
 Brightness? _lastBrightness;
 void fixStatusBarOniOS16AndBelow(BuildContext context) {
   if (!isiOS) {

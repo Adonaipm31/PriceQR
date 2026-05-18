@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'dart:convert'; // ✅ IMPORTANTE: Para base64
+import 'dart:convert'; // IMPORTANTE: Para base64
 
 class AnadirProductoWidget extends StatefulWidget {
   const AnadirProductoWidget({super.key});
@@ -30,17 +30,17 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
   int _caracteresDescripcion = 0;
   final int _maxCaracteres = 250;
   
-  // ✅ VARIABLES PARA CONSULTA PRECIOS
+  // VARIABLES PARA CONSULTA PRECIOS
   List<Map<String, dynamic>> _sugerencias = [];
   Map<String, dynamic>? _productoSeleccionado;
   bool _mostrarSugerencias = false;
   double _precioMaximoOficial = 0;
   double _precioReferenciaOficial = 0;
 
-  // ✅ NUEVAS VARIABLES PARA IMÁGENES (BASE64)
+  // NUEVAS VARIABLES PARA IMÁGENES (BASE64)
   List<File> _imagenesSeleccionadas = [];
-  List<String> _imagenesBase64 = []; // ✅ CAMBIO: Base64 en lugar de URLs
-  bool _procesandoImagenes = false; // ✅ CAMBIO: Renombrado
+  List<String> _imagenesBase64 = []; // CAMBIO: Base64 en lugar de URLs
+  bool _procesandoImagenes = false; // CAMBIO: Renombrado
   final ImagePicker _imagePicker = ImagePicker();
 
   @override
@@ -82,7 +82,7 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
     super.dispose();
   }
 
-  // ✅ FUNCIÓN: Filtrar categorías por tipo
+  // FUNCIÓN: Filtrar categorías por tipo
   List<String> _obtenerCategoriasPorTipo(String? tipo) {
     if (tipo == 'Producto') {
       return const ['Comida', 'Bebidas', 'Otros Productos'];
@@ -102,7 +102,7 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
     }
   }
 
-  // ✅ FUNCIÓN: Buscar precios oficiales
+  // FUNCIÓN: Buscar precios oficiales
   Future<void> _buscarPreciosOficiales(String query) async {
     if (query.length < 2) {
       setState(() {
@@ -132,7 +132,7 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
     }
   }
 
-  // ✅ FUNCIÓN: Seleccionar producto oficial
+  // FUNCIÓN: Seleccionar producto oficial
   void _seleccionarProductoOficial(Map<String, dynamic> producto) {
     setState(() {
       _productoSeleccionado = producto;
@@ -154,7 +154,7 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
     });
   }
 
-  // ✅ FUNCIÓN: Convertir imagen a Base64
+  // FUNCIÓN: Convertir imagen a Base64
   Future<String> _convertirImagenABase64(File imageFile) async {
     try {
       final bytes = await imageFile.readAsBytes();
@@ -166,14 +166,14 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
     }
   }
 
-  // ✅ FUNCIÓN: Seleccionar de galería (BASE64)
+  // FUNCIÓN: Seleccionar de galería (BASE64)
   Future<void> _seleccionarDeGaleria() async {
     try {
       final XFile? imagen = await _imagePicker.pickImage(
         source: ImageSource.gallery,
         maxWidth: 1024,
         maxHeight: 1024,
-        imageQuality: 70, // ✅ REDUCIDO para base64 más pequeño
+        imageQuality: 70, // REDUCIDO para base64 más pequeño
       );
 
       if (imagen != null && _imagenesSeleccionadas.length < 2) {
@@ -216,14 +216,14 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
     }
   }
 
-  // ✅ FUNCIÓN: Tomar foto con cámara (BASE64)
+  // FUNCIÓN: Tomar foto con cámara (BASE64)
   Future<void> _tomarFoto() async {
     try {
       final XFile? foto = await _imagePicker.pickImage(
         source: ImageSource.camera,
         maxWidth: 1024,
         maxHeight: 1024,
-        imageQuality: 70, // ✅ REDUCIDO para base64 más pequeño
+        imageQuality: 70, // REDUCIDO para base64 más pequeño
       );
 
       if (foto != null && _imagenesSeleccionadas.length < 2) {
@@ -266,7 +266,7 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
     }
   }
 
-  // ✅ FUNCIÓN: Eliminar imagen
+  // FUNCIÓN: Eliminar imagen
   void _eliminarImagen(int index) {
     setState(() {
       _imagenesSeleccionadas.removeAt(index);
@@ -274,7 +274,7 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
     });
   }
 
-  // ✅ WIDGET: Lista de sugerencias
+  // WIDGET: Lista de sugerencias
   Widget _buildSugerencias() {
     if (!_mostrarSugerencias) return SizedBox();
 
@@ -331,7 +331,7 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
     );
   }
 
-  // ✅ WIDGET: Indicador de validación de precio
+  // WIDGET: Indicador de validación de precio
   Widget _buildIndicadorPrecio() {
     if (_precioMaximoOficial == 0) return SizedBox();
     
@@ -396,7 +396,7 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
     );
   }
 
-  // ✅ FUNCIÓN PRINCIPAL: Guardar producto
+  // FUNCIÓN PRINCIPAL: Guardar producto
   Future<void> _guardarProducto() async {
     // Validación básica
     if (_model.nombreProductoTextController.text.isEmpty ||
@@ -426,7 +426,7 @@ class _AnadirProductoWidgetState extends State<AnadirProductoWidget> {
 
     final precioIngresado = double.tryParse(_model.precioProductoTextController.text) ?? 0;
     
-    // ✅ BUSCAR EL PRECIO MÁXIMO POR CATEGORÍA
+    // BUSCAR EL PRECIO MÁXIMO POR CATEGORÍA
 double precioMaximoEncontrado = 0;
 
 try {
@@ -447,7 +447,7 @@ try {
   print('Error buscando precios oficiales: $e');
 }
 
-    // ✅ VALIDACIÓN STRICT: Precio máximo oficial por categoría
+    // VALIDACIÓN STRICT: Precio máximo oficial por categoría
 if (precioMaximoEncontrado > 0 && precioIngresado > precioMaximoEncontrado) {
   await showDialog(
     context: context,
@@ -504,7 +504,7 @@ if (precioMaximoEncontrado > 0 && precioIngresado > precioMaximoEncontrado) {
         return;
       }
 
-      // ✅ CREAR DOCUMENTO PARA FIRESTORE (CON BASE64)
+      // CREAR DOCUMENTO PARA FIRESTORE (CON BASE64)
       final nuevoProducto = {
         'nombre': _model.nombreProductoTextController.text,
         'descripcion': _model.descripcionProductoTextController.text,
@@ -516,7 +516,7 @@ if (precioMaximoEncontrado > 0 && precioIngresado > precioMaximoEncontrado) {
         'stock': _model.tipoValue == 'Producto' 
             ? int.tryParse(_model.stockProductoTextController?.text ?? '0') ?? 0
             : null,
-        'imagenes_base64': _imagenesBase64, // ✅ CAMBIO: Base64 en lugar de URLs
+        'imagenes_base64': _imagenesBase64, // CAMBIO: Base64 en lugar de URLs
         'cantidad_imagenes': _imagenesBase64.length,
         'fecha_creacion': FieldValue.serverTimestamp(),
         'activo': true,
@@ -528,7 +528,7 @@ if (precioMaximoEncontrado > 0 && precioIngresado > precioMaximoEncontrado) {
         }
       };
 
-      // ✅ GUARDAR EN FIRESTORE
+      // GUARDAR EN FIRESTORE
       await FirebaseFirestore.instance.collection('catalogo').add(nuevoProducto);
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -597,7 +597,7 @@ if (precioMaximoEncontrado > 0 && precioIngresado > precioMaximoEncontrado) {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ✅ SECCIÓN IMÁGENES MEJORADA (BASE64)
+                // SECCIÓN IMÁGENES MEJORADA (BASE64)
                 Column(
                   children: [
                     Text(
@@ -959,7 +959,7 @@ if (precioMaximoEncontrado > 0 && precioIngresado > precioMaximoEncontrado) {
                   ],
                 ),
 
-                // ✅ Indicador de precio oficial
+                // Indicador de precio oficial
                 if (_precioMaximoOficial > 0) ...[
                   SizedBox(height: 16.0),
                   _buildIndicadorPrecio(),

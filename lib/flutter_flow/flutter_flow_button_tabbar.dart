@@ -34,10 +34,7 @@ class _TabLabelBarRenderer extends RenderFlex {
   @override
   void performLayout() {
     super.performLayout();
-    // xOffsets will contain childCount+1 values, giving the offsets of the
-    // leading edge of the first tab as the first value, of the leading edge of
-    // the each subsequent tab as each subsequent value, and of the trailing
-    // edge of the last tab as the last value.
+
     RenderBox? child = firstChild;
     final List<double> xOffsets = <double>[];
     while (child != null) {
@@ -60,9 +57,6 @@ class _TabLabelBarRenderer extends RenderFlex {
   }
 }
 
-// This class and its renderer class only exist to report the widths of the tabs
-// upon layout. The tab widths are only used at paint time (see _IndicatorPainter)
-// or in response to input.
 class _TabLabelBar extends Flex {
   _TabLabelBar({
     required List<Widget> children,
@@ -114,9 +108,6 @@ class _IndicatorPainter extends CustomPainter {
 
   final List<GlobalKey> tabKeys;
 
-  // _currentTabOffsets and _currentTextDirection are set each time TabBar
-  // layout is completed. These values can be null when TabBar contains no
-  // tabs, since there are nothing to lay out.
   List<double>? _currentTabOffsets;
   TextDirection? _currentTextDirection;
 
@@ -135,8 +126,6 @@ class _IndicatorPainter extends CustomPainter {
     _currentTextDirection = textDirection;
   }
 
-  // _currentTabOffsets[index] is the offset of the start edge of the tab at index, and
-  // _currentTabOffsets[_currentTabOffsets.length] is the end edge of the last tab.
   int get maxTabIndex => _currentTabOffsets!.length - 2;
 
   double centerOf(int tabIndex) {
@@ -163,11 +152,6 @@ class _IndicatorPainter extends CustomPainter {
   }
 }
 
-// This class, and TabBarScrollController, only exist to handle the case
-// where a scrollable TabBar has a non-zero initialIndex. In that case we can
-// only compute the scroll position's initial scroll offset (the "correct"
-// pixels value) after the TabBar viewport width and scroll limits are known.
-
 class _TabBarScrollPosition extends ScrollPositionWithSingleContext {
   _TabBarScrollPosition({
     required ScrollPhysics physics,
@@ -185,7 +169,6 @@ class _TabBarScrollPosition extends ScrollPositionWithSingleContext {
 
   bool _viewportDimensionWasNonZero = false;
 
-  // Position should be adjusted at least once.
   bool _needsPixelsCorrection = true;
 
   @override
@@ -194,13 +177,7 @@ class _TabBarScrollPosition extends ScrollPositionWithSingleContext {
     if (!_viewportDimensionWasNonZero) {
       _viewportDimensionWasNonZero = viewportDimension != 0.0;
     }
-    // If the viewport never had a non-zero dimension, we just want to jump
-    // to the initial scroll position to avoid strange scrolling effects in
-    // release mode: In release mode, the viewport temporarily may have a
-    // dimension of zero before the actual dimension is calculated. In that
-    // scenario, setting the actual dimension would cause a strange scroll
-    // effect without this guard because the super call below would starts a
-    // ballistic scroll activity.
+   
     if (!_viewportDimensionWasNonZero || _needsPixelsCorrection) {
       _needsPixelsCorrection = false;
       correctPixels(tabBar._initialScrollOffset(
@@ -216,8 +193,6 @@ class _TabBarScrollPosition extends ScrollPositionWithSingleContext {
   }
 }
 
-// This class, and TabBarScrollPosition, only exist to handle the case
-// where a scrollable TabBar has a non-zero initialIndex.
 class _TabBarScrollController extends ScrollController {
   _TabBarScrollController(this.tabBar);
 
@@ -235,7 +210,6 @@ class _TabBarScrollController extends ScrollController {
   }
 }
 
-/// A Flutterflow Design widget that displays a horizontal row of tabs.
 class FlutterFlowButtonTabBar extends StatefulWidget
     implements PreferredSizeWidget {
   /// The [tabs] argument must not be null and its length must match the [controller]'s
@@ -399,16 +373,12 @@ class _FlutterFlowButtonTabBarState extends State<FlutterFlowButtonTabBar>
   @override
   void initState() {
     super.initState();
-    // If indicatorSize is TabIndicatorSize.label, _tabKeys[i] is used to find
-    // the width of tab widget i. See _IndicatorPainter.indicatorRect().
+
     _tabKeys = widget.tabs.map((tab) => GlobalKey()).toList();
 
-    /// The animation duration is 2/3 of the tab scroll animation duration in
-    /// Material design (kTabScrollDuration).
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 200));
 
-    // so the buttons start in their "final" state (color)
     _animationController
       ..value = 1.0
       ..addListener(() {
@@ -418,9 +388,7 @@ class _FlutterFlowButtonTabBarState extends State<FlutterFlowButtonTabBar>
       });
   }
 
-  // If the TabBar is rebuilt with a new tab controller, the caller should
-  // dispose the old one. In that case the old controller's animation will be
-  // null and should not be accessed.
+  
   bool get _controllerIsValid => _controller?.animation != null;
 
   void _updateTabController() {
@@ -504,7 +472,7 @@ class _FlutterFlowButtonTabBarState extends State<FlutterFlowButtonTabBar>
       _controller!.removeListener(_handleTabControllerTick);
     }
     _controller = null;
-    // We don't own the _controller Animation, so it's not disposed here.
+   
     super.dispose();
   }
 
@@ -581,7 +549,7 @@ class _FlutterFlowButtonTabBarState extends State<FlutterFlowButtonTabBar>
   void _handleTabControllerAnimationTick() {
     assert(mounted);
     if (!_controller!.indexIsChanging && widget.isScrollable) {
-      // Sync the TabBar's scroll position with the TabBarView's PageView.
+     
       _currentIndex = _controller!.index;
       _scrollToControllerValue();
     }
@@ -597,19 +565,17 @@ class _FlutterFlowButtonTabBarState extends State<FlutterFlowButtonTabBar>
       }
     }
     setState(() {
-      // Rebuild the tabs after a (potentially animated) index change
-      // has completed.
+
     });
   }
 
   void _triggerAnimation() {
-    // reset the animation so it's ready to go
+
     _animationController
       ..reset()
       ..forward();
   }
 
-  // Called each time layout completes.
   void _saveTabOffsets(
       List<double> tabOffsets, TextDirection textDirection, double width) {
     _tabStripWidth = width;
@@ -713,7 +679,7 @@ class _FlutterFlowButtonTabBarState extends State<FlutterFlowButtonTabBar>
 
     return Padding(
       key: _tabKeys[index],
-      // padding for the buttons
+
       padding:
           widget.useToggleButtonStyle ? EdgeInsets.zero : widget.buttonMargin,
       child: TextButton(
@@ -722,7 +688,6 @@ class _FlutterFlowButtonTabBarState extends State<FlutterFlowButtonTabBar>
           elevation: WidgetStateProperty.all(
               widget.useToggleButtonStyle ? 0 : widget.elevation),
 
-          /// give a pretty small minimum size
           minimumSize: WidgetStateProperty.all(const Size(10, 10)),
           padding: WidgetStateProperty.all(EdgeInsets.zero),
           textStyle: WidgetStateProperty.all(textStyle),
@@ -798,9 +763,6 @@ class _FlutterFlowButtonTabBarState extends State<FlutterFlowButtonTabBar>
     });
 
     final int tabCount = widget.tabs.length;
-    // Add the tap handler to each tab. If the tab bar is not scrollable,
-    // then give all of the tabs equal flexibility so that they each occupy
-    // the same share of the tab bar's overall width.
 
     for (int index = 0; index < tabCount; index += 1) {
       if (!widget.isScrollable) {

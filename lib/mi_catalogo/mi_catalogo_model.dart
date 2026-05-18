@@ -1,4 +1,4 @@
-// 📄 mi_catalogo_model.dart
+// mi_catalogo_model.dart
 import '/flutter_flow/flutter_flow_util.dart';
 import 'mi_catalogo_widget.dart' show MiCatalogoWidget;
 import 'package:flutter/material.dart';

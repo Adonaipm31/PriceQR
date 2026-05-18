@@ -186,7 +186,7 @@ class _QRVerificationWidgetState extends State<QRVerificationWidget> {
 
                                         if (value.isEmpty) continue;
 
-                                        // ✅ 1. DETECTAR FORMATO PRICEQR
+                                        // 1. DETECTAR FORMATO PRICEQR
                                         if (value.startsWith('priceqr://vendedor/')) {
                                           final userId = value.replaceFirst('priceqr://vendedor/', '');
                                           debugPrint('✅ QR PriceQR detectado - UserID: $userId');
@@ -218,7 +218,7 @@ class _QRVerificationWidgetState extends State<QRVerificationWidget> {
                                           return;
                                         }
 
-                                        // ✅ 2. VERIFICAR SI ES IMAGEN
+                                        // 2. VERIFICAR SI ES IMAGEN
                                         final isImageUrl = value.endsWith('.jpg') ||
                                             value.endsWith('.jpeg') ||
                                             value.endsWith('.png') ||
@@ -286,7 +286,7 @@ class _QRVerificationWidgetState extends State<QRVerificationWidget> {
                                           );
 
                                         } else {
-                                          // ✅ 3. CUALQUIER OTRO QR
+                                          // 3. CUALQUIER OTRO QR
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
                                               content: Text('📄 QR: $value'),

@@ -59,7 +59,7 @@ class _GenerarQrWidgetState extends State<GenerarQrWidget> {
         nombreVendedor = vendedorDoc.data()?['nombre'] ?? 'Vendedor';
         cantidadProductos = productosSnapshot.docs.length;
         
-        // ✅ QR QUE SÍ FUNCIONA - Formato simple y claro
+        // QR QUE SÍ FUNCIONA - Formato simple y claro
         qrData = 'priceqr://vendedor/${user.uid}';
         // Alternativa: 'https://priceqr.com/vendedor/${user.uid}'
         
@@ -123,7 +123,7 @@ class _GenerarQrWidgetState extends State<GenerarQrWidget> {
         padding: EdgeInsets.all(24),
         child: Column(
           children: [
-            // ✅ INFORMACIÓN DEL VENDEDOR
+            // INFORMACIÓN DEL VENDEDOR
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(16),
@@ -157,7 +157,7 @@ class _GenerarQrWidgetState extends State<GenerarQrWidget> {
 
             SizedBox(height: 32),
 
-            // ✅ QR REAL Y FUNCIONAL
+            // QR REAL Y FUNCIONAL
             Text(
               'Código QR de mi catálogo',
               style: TextStyle(
@@ -208,7 +208,7 @@ class _GenerarQrWidgetState extends State<GenerarQrWidget> {
 
             SizedBox(height: 24),
 
-            // ✅ DATOS DEL QR (PARA PRUEBAS)
+            // DATOS DEL QR (PARA PRUEBAS)
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(12),
@@ -242,7 +242,7 @@ class _GenerarQrWidgetState extends State<GenerarQrWidget> {
 
             SizedBox(height: 32),
 
-            // ✅ BOTONES DE ACCIÓN
+            // BOTONES DE ACCIÓN
             Row(
               children: [
                 Expanded(
@@ -264,7 +264,7 @@ class _GenerarQrWidgetState extends State<GenerarQrWidget> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      context.pop(); // ✅ BOTÓN PARA VOLVER
+                      context.pop(); // BOTÓN PARA VOLVER
                     },
                     icon: Icon(Icons.arrow_back),
                     label: Text('Volver'),
@@ -278,7 +278,7 @@ class _GenerarQrWidgetState extends State<GenerarQrWidget> {
 
             SizedBox(height: 16),
 
-            // ✅ INSTRUCCIONES
+            // INSTRUCCIONES
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(16),
