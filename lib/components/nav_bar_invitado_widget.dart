@@ -132,7 +132,7 @@ class _NavBarInvitadoWidgetState
 
                 /// TITULO
                 Text(
-                  'Función exclusiva para usuarios registrados',
+                  'Exclusive feature for registered users',
                   style:
                       FlutterFlowTheme.of(context)
                           .titleMedium
@@ -150,7 +150,7 @@ class _NavBarInvitadoWidgetState
 
                 /// TEXTO
                 Text(
-                  'Crea una cuenta para acceder a las notificaciones y disfrutar de todas las ventajas de PriceQR.',
+                  'Create an account to access notifications and enjoy all the benefits of PriceQR.',
                   style:
                       FlutterFlowTheme.of(context)
                           .bodyMedium,
@@ -190,7 +190,7 @@ class _NavBarInvitadoWidgetState
                       ),
                     ),
                     child: const Text(
-                      'Crear cuenta',
+                      'Create account',
                     ),
                   ),
                 ),
