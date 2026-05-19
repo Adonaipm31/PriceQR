@@ -106,7 +106,7 @@ class _CatalogoPublicoWidgetState extends State<CatalogoPublicoWidget> {
  
       // Filtrar productos activos en memoria
       final productosFiltrados = productosSnapshot.docs.where((doc) {
-        final data = doc.data() as Map<String, dynamic>;
+        final data = doc.data();
         return data['activo'] == true;
       }).toList();
  
