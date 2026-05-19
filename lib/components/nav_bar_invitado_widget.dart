@@ -11,10 +11,12 @@ class NavBarInvitadoWidget extends StatefulWidget {
   const NavBarInvitadoWidget({super.key});
 
   @override
-  State<NavBarInvitadoWidget> createState() => _NavBarInvitadoWidgetState();
+  State<NavBarInvitadoWidget> createState() =>
+      _NavBarInvitadoWidgetState();
 }
 
-class _NavBarInvitadoWidgetState extends State<NavBarInvitadoWidget> {
+class _NavBarInvitadoWidgetState
+    extends State<NavBarInvitadoWidget> {
   late NavBarInvitadoModel _model;
 
   @override
@@ -26,400 +28,374 @@ class _NavBarInvitadoWidgetState extends State<NavBarInvitadoWidget> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => NavBarInvitadoModel());
+    _model =
+        createModel(context, () => NavBarInvitadoModel());
   }
 
   @override
   void dispose() {
     _model.maybeDispose();
-
     super.dispose();
+  }
+
+  Widget navItem({
+    required IconData icon,
+    required String label,
+    required List<Color> colors,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            /// ICONO
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: colors,
+                ),
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: colors.first.withOpacity(.25),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  )
+                ],
+              ),
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 22,
+              ),
+            ),
+
+            const SizedBox(height: 6),
+
+            /// TEXTO
+            Text(
+              label,
+              style: GoogleFonts.karla(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF1E293B),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showRegisterDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          backgroundColor:
+              FlutterFlowTheme.of(context)
+                  .secondaryBackground,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
+              children: [
+
+                /// CERRAR
+                Align(
+                  alignment: Alignment.topRight,
+                  child: InkWell(
+                    onTap: () =>
+                        Navigator.pop(context),
+                    child: Icon(
+                      Icons.close,
+                      color:
+                          FlutterFlowTheme.of(context)
+                              .secondaryText,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                /// TITULO
+                Text(
+                  'Función exclusiva para usuarios registrados',
+                  style:
+                      FlutterFlowTheme.of(context)
+                          .titleMedium
+                          .override(
+                            font:
+                                GoogleFonts.karla(),
+                            fontSize: 16,
+                            fontWeight:
+                                FontWeight.bold,
+                            letterSpacing: 0,
+                          ),
+                ),
+
+                const SizedBox(height: 12),
+
+                /// TEXTO
+                Text(
+                  'Crea una cuenta para acceder a las notificaciones y disfrutar de todas las ventajas de PriceQR.',
+                  style:
+                      FlutterFlowTheme.of(context)
+                          .bodyMedium,
+                ),
+
+                const SizedBox(height: 22),
+
+                /// BOTON
+                Align(
+                  alignment: Alignment.center,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+
+                      context.pushNamed(
+                        OpcionDeRegistroWidget
+                            .routeName,
+                      );
+                    },
+                    style:
+                        ElevatedButton.styleFrom(
+                      backgroundColor:
+                          FlutterFlowTheme.of(
+                                  context)
+                              .primary,
+                      elevation: 0,
+                      padding:
+                          const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 14,
+                      ),
+                      shape:
+                          RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(
+                                14),
+                      ),
+                    ),
+                    child: const Text(
+                      'Crear cuenta',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: AlignmentDirectional(0.0, 1.0),
+      alignment:
+          const AlignmentDirectional(0.0, 1.0),
+
       child: Container(
         width: double.infinity,
-        height: 75.0,
-        decoration: BoxDecoration(),
+        height: 90,
+
+        decoration: const BoxDecoration(
+          color: Colors.transparent,
+        ),
+
         child: Stack(
-          alignment: AlignmentDirectional(0.0, 1.0),
+          alignment: Alignment.bottomCenter,
           children: [
+
+            /// NAVBAR
             Container(
               width: double.infinity,
-              height: 54.0,
+              height: 72,
+
+              margin:
+                  const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 6,
+              ),
+
               decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
+                color: Colors.white,
+                borderRadius:
+                    BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black
+                        .withOpacity(.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  )
+                ],
               ),
+
               child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(30.0, 0.0, 30.0, 0.0),
+                padding:
+                    const EdgeInsets.symmetric(
+                  horizontal: 18,
+                ),
+
                 child: Row(
-                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    Expanded(
-                      child: Container(
-                        width: 50.0,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                        ),
-                        child: InkWell(
-                          splashColor: Colors.transparent,
-                          focusColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onTap: () async {
-                            context.pushNamed(HomeInvitadoWidget.routeName);
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 23.0,
-                                height: 23.0,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.none,
-                                    image: Image.asset(
-                                      'assets/images/Group_33335.png',
-                                    ).image,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'Explore',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      font: GoogleFonts.karla(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      fontSize: 12.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+
+                    /// EXPLORE
+                    navItem(
+                      icon:
+                          Icons.explore_rounded,
+                      label: 'Explore',
+                      colors: const [
+                        Color(0xFF4F46E5),
+                        Color(0xFF6366F1),
+                      ],
+                      onTap: () async {
+                        context.pushNamed(
+                          HomeInvitadoWidget
+                              .routeName,
+                        );
+                      },
                     ),
-                    Expanded(
-                      child: InkWell(
-                        splashColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () async {
-                          context.pushNamed(
-                            SosWidget.routeName,
-                            extra: <String, dynamic>{
-                              kTransitionInfoKey: TransitionInfo(
-                                hasTransition: true,
-                                transitionType: PageTransitionType.rightToLeft,
-                                duration: Duration(milliseconds: 1),
+
+                    /// SOS
+                    navItem(
+                      icon: Icons.sos_rounded,
+                      label: 'SOS',
+                      colors: const [
+                        Color(0xFFFF4D4D),
+                        Color(0xFFFF6B6B),
+                      ],
+                      onTap: () async {
+                        context.pushNamed(
+                          SosWidget.routeName,
+                          extra:
+                              <String, dynamic>{
+                            kTransitionInfoKey:
+                                TransitionInfo(
+                              hasTransition:
+                                  true,
+                              transitionType:
+                                  PageTransitionType
+                                      .rightToLeft,
+                              duration:
+                                  Duration(
+                                milliseconds:
+                                    1,
                               ),
-                            },
-                          );
-                        },
-                        child: Container(
-                          width: 50.0,
-                          height: 50.0,
-                          decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                          ),
-                          child: InkWell(
-                            splashColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onTap: () async {
-                              context.pushNamed(SosWidget.routeName);
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Opacity(
-                                  opacity: 0.9,
-                                  child: Container(
-                                    width: 25.0,
-                                    height: 25.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        fit: BoxFit.contain,
-                                        image: Image.asset(
-                                          'assets/images/neoel_a.png',
-                                        ).image,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  'SOS',
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.karla(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        fontSize: 12.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                ),
-                              ],
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 50.0,
-                      height: 50.0,
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                      ),
-                    ),
-                    Expanded(
-  child: Container(
-    width: 50.0,
-    height: 50.0,
-    decoration: BoxDecoration(
-      color: FlutterFlowTheme.of(context).secondaryBackground,
-    ),
-    child: InkWell(
-      splashColor: Colors.transparent,
-      focusColor: Colors.transparent,
-      hoverColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      onTap: () async {
-        // 
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              backgroundColor:
-                  FlutterFlowTheme.of(context).secondaryBackground,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Botón X para cerrar
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: Icon(
-                          Icons.close,
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    // Título del modal
-                    Text(
-                      'Función exclusiva para usuarios registrados',
-                      style: FlutterFlowTheme.of(context).titleMedium.override(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Crea una cuenta para acceder a las notificaciones y disfrutar de todas las ventajas de PriceQR.',
-                      style: FlutterFlowTheme.of(context).bodyMedium,
-                    ),
-                    const SizedBox(height: 20),
-                    Align(
-                      alignment: Alignment.center,
-                      child: ElevatedButton(
-                        onPressed: () {
-                            Navigator.pop(context);
-                            context.pushNamed(OpcionDeRegistroWidget.routeName);
                           },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              FlutterFlowTheme.of(context).primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text('Crear cuenta'),
-                      ),
+                        );
+                      },
+                    ),
+
+                    const SizedBox(width: 58),
+
+                    /// INBOX RESTRINGIDO
+                    navItem(
+                      icon: Icons
+                          .notifications_rounded,
+                      label: 'Inbox',
+                      colors: const [
+                        Color(0xFF0EA5E9),
+                        Color(0xFF38BDF8),
+                      ],
+                      onTap: () async {
+                        showRegisterDialog();
+                      },
+                    ),
+
+                    /// PROFILE
+                    navItem(
+                      icon:
+                          Icons.person_rounded,
+                      label: 'Profile',
+                      colors: const [
+                        Color(0xFF111827),
+                        Color(0xFF374151),
+                      ],
+                      onTap: () async {
+                        context.pushNamed(
+                          ProfileUserInvitadoWidget
+                              .routeName,
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
-            );
-          },
-        );
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Opacity(
-            opacity: 0.9,
-            child: Container(
-              width: 25.0,
-              height: 25.0,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.contain,
-                  image: Image.asset(
-                    'assets/images/notifications_off_24dp_434343_FILL0_wght400_GRAD0_opsz24.png',
-                  ).image,
-                ),
-              ),
             ),
-          ),
-          Text(
-            'Inbox',
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.karla(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                  ),
-                  fontSize: 12.0,
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-          ),
-        ],
-      ),
-    ),
-  ),
-),
 
-                    Expanded(
-                      child: Container(
-                        width: 50.0,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                        ),
-                        child: InkWell(
-                          splashColor: Colors.transparent,
-                          focusColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onTap: () async {
-                            context
-                                .pushNamed(ProfileUserInvitadoWidget.routeName);
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Opacity(
-                                opacity: 0.5,
-                                child: Container(
-                                  width: 23.0,
-                                  height: 23.0,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      fit: BoxFit.contain,
-                                      image: Image.asset(
-                                        'assets/images/Profile.png',
-                                      ).image,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'Profile',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      font: GoogleFonts.karla(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      fontSize: 12.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                              ),
-                            ],
+            /// BOTON QR CENTRAL
+            Positioned(
+              top: 0,
+
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient:
+                      const LinearGradient(
+                    colors: [
+                      Color(0xFF111827),
+                      Color(0xFF1F2937),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black
+                          .withOpacity(.25),
+                      blurRadius: 18,
+                      offset:
+                          const Offset(0, 8),
+                    )
+                  ],
+                ),
+
+                child: FlutterFlowIconButton(
+                  borderRadius: 99,
+                  buttonSize: 62,
+                  fillColor:
+                      Colors.transparent,
+
+                  icon: const Icon(
+                    Icons.qr_code_rounded,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+
+                  onPressed: () async {
+                    context.pushNamed(
+                      QRVerificationWidget
+                          .routeName,
+                      extra:
+                          <String, dynamic>{
+                        kTransitionInfoKey:
+                            TransitionInfo(
+                          hasTransition: true,
+                          transitionType:
+                              PageTransitionType
+                                  .rightToLeft,
+                          duration: Duration(
+                            milliseconds: 350,
                           ),
                         ),
-                      ),
-                    ),
-                  ].divide(SizedBox(width: 12.0)),
+                      },
+                    );
+                  },
                 ),
-              ),
-            ),
-            Align(
-              alignment: AlignmentDirectional(0.0, -1.0),
-              child: FlutterFlowIconButton(
-                borderRadius: 99.0,
-                buttonSize: 50.0,
-                fillColor: FlutterFlowTheme.of(context).primary,
-                icon: Icon(
-                  Icons.qr_code,
-                  color: FlutterFlowTheme.of(context).info,
-                  size: 24.0,
-                ),
-                onPressed: () async {
-                  context.pushNamed(
-                    QRVerificationWidget.routeName,
-                    extra: <String, dynamic>{
-                      kTransitionInfoKey: TransitionInfo(
-                        hasTransition: true,
-                        transitionType: PageTransitionType.rightToLeft,
-                        duration: Duration(milliseconds: 400),
-                      ),
-                    },
-                  );
-                },
               ),
             ),
           ],
