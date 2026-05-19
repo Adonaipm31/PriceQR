@@ -92,7 +92,7 @@ class _OpcionDeRegistroWidgetState extends State<OpcionDeRegistroWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  '¿Cómo desea registrarse?',
+                  '¿How do you want to register?',
                   textAlign: TextAlign.center,
                   style: FlutterFlowTheme.of(context).headlineMedium.override(
                         font: GoogleFonts.karla(
@@ -172,7 +172,7 @@ class _OpcionDeRegistroWidgetState extends State<OpcionDeRegistroWidget> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Turista',
+                                        'Tourist',
                                         style: FlutterFlowTheme.of(context)
                                             .titleLarge
                                             .override(
@@ -189,7 +189,7 @@ class _OpcionDeRegistroWidgetState extends State<OpcionDeRegistroWidget> {
                                             ),
                                       ),
                                       Text(
-                                        'Explorar información y ver precios',
+                                        'Explore information and view prices',
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
