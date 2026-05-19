@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'editar_perfil_vendedor_model.dart';
+
 export 'editar_perfil_vendedor_model.dart';
 
 class EditarPerfilVendedorWidget extends StatefulWidget {
@@ -22,8 +23,8 @@ class EditarPerfilVendedorWidget extends StatefulWidget {
 class _EditarPerfilVendedorWidgetState
     extends State<EditarPerfilVendedorWidget> {
   late EditarPerfilVendedorModel _model;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -31,23 +32,41 @@ class _EditarPerfilVendedorWidgetState
     _model = createModel(context, () => EditarPerfilVendedorModel());
 
     _model.yourNameTextController ??= TextEditingController();
-    _model.yourNameFocusNode ??= FocusNode();
-
     _model.emailAddressTextController ??= TextEditingController();
-    _model.emailAddressFocusNode ??= FocusNode();
-
     _model.passwordTextController1 ??= TextEditingController();
-    _model.passwordFocusNode1 ??= FocusNode();
-
     _model.passwordTextController2 ??= TextEditingController();
-    _model.passwordFocusNode2 ??= FocusNode();
+
+    _model.passwordVisibility1 = false;
+    _model.passwordVisibility2 = false;
   }
 
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
+  }
+
+  void _saveChanges() {
+    if (!_formKey.currentState!.validate()) return;
+
+    final name = _model.yourNameTextController.text.trim();
+    final email = _model.emailAddressTextController.text.trim();
+    final pass1 = _model.passwordTextController1.text;
+    final pass2 = _model.passwordTextController2.text;
+
+    if (pass1 != pass2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Las contraseñas no coinciden")),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Perfil actualizado correctamente")),
+    );
+
+    print("Name: $name");
+    print("Email: $email");
   }
 
   @override
@@ -55,620 +74,139 @@ class _EditarPerfilVendedorWidgetState
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100.0),
-        child: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-          automaticallyImplyLeading: false,
-          actions: [],
-          flexibleSpace: FlexibleSpaceBar(
-            title: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 14.0),
+      appBar: AppBar(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        elevation: 0,
+        leading: FlutterFlowIconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.safePop(),
+        ),
+        title: Text(
+          'Editar perfil',
+          style: FlutterFlowTheme.of(context).headlineMedium.override(
+                font: GoogleFonts.karla(),
+                fontSize: 22,
+              ),
+        ),
+      ),
+
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
               child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              12.0, 0.0, 0.0, 0.0),
-                          child: FlutterFlowIconButton(
-                            borderColor: Colors.transparent,
-                            borderRadius: 30.0,
-                            borderWidth: 1.0,
-                            buttonSize: 50.0,
-                            icon: Icon(
-                              Icons.arrow_back_rounded,
-                              color: FlutterFlowTheme.of(context).primaryText,
-                              size: 30.0,
-                            ),
-                            onPressed: () async {
-                              context.safePop();
-                            },
-                          ),
-                        ),
-                      ],
+                  // AVATAR
+                  GestureDetector(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text("Función de foto próximamente")),
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor:
+                          FlutterFlowTheme.of(context).alternate,
+                      child: const Icon(Icons.add_a_photo, size: 40),
                     ),
                   ),
-                  Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 0.0, 0.0),
-                    child: Text(
-                      'Edit profile',
-                      style:
-                          FlutterFlowTheme.of(context).headlineMedium.override(
-                                font: GoogleFonts.karla(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .headlineMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .headlineMedium
-                                      .fontStyle,
-                                ),
-                                color: FlutterFlowTheme.of(context).primaryText,
-                                fontSize: 22.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontStyle,
-                              ),
+
+                  const SizedBox(height: 25),
+
+                  // NAME
+                  TextFormField(
+                    controller: _model.yourNameTextController,
+                    decoration: const InputDecoration(
+                      labelText: "Nombre",
+                      border: OutlineInputBorder(),
+                    ),
+                    textCapitalization: TextCapitalization.words,
+                    validator: (v) =>
+                        v!.isEmpty ? "Ingresa tu nombre" : null,
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  // EMAIL
+                  TextFormField(
+                    controller: _model.emailAddressTextController,
+                    decoration: const InputDecoration(
+                      labelText: "Email",
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    textCapitalization: TextCapitalization.none,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return "Ingresa email";
+                      if (!v.contains("@")) return "Email inválido";
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  // PASSWORD
+                  TextFormField(
+                    controller: _model.passwordTextController1,
+                    obscureText: !_model.passwordVisibility1,
+                    decoration: InputDecoration(
+                      labelText: "Contraseña",
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(_model.passwordVisibility1
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: () => setState(() =>
+                            _model.passwordVisibility1 =
+                                !_model.passwordVisibility1),
+                      ),
+                    ),
+                    validator: (v) =>
+                        v!.length < 6 ? "Mínimo 6 caracteres" : null,
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  // CONFIRM PASSWORD
+                  TextFormField(
+                    controller: _model.passwordTextController2,
+                    obscureText: !_model.passwordVisibility2,
+                    decoration: InputDecoration(
+                      labelText: "Confirmar contraseña",
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(_model.passwordVisibility2
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: () => setState(() =>
+                            _model.passwordVisibility2 =
+                                !_model.passwordVisibility2),
+                      ),
+                    ),
+                    validator: (v) =>
+                        v!.isEmpty ? "Confirma contraseña" : null,
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // BUTTON
+                  FFButtonWidget(
+                    onPressed: _saveChanges,
+                    text: "Guardar cambios",
+                    options: FFButtonOptions(
+                      width: double.infinity,
+                      height: 50,
+                      color: FlutterFlowTheme.of(context).primary,
+                      textStyle: const TextStyle(color: Colors.white),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ],
               ),
             ),
-            centerTitle: true,
-            expandedTitleScale: 1.0,
-          ),
-          elevation: 0.0,
-        ),
-      ),
-      body: SafeArea(
-        top: true,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).alternate,
-                        shape: BoxShape.circle,
-                      ),
-                      child: FlutterFlowIconButton(
-                        borderRadius: 8.0,
-                        buttonSize: 40.0,
-                        fillColor: Color(0x005669FF),
-                        icon: Icon(
-                          Icons.add_a_photo,
-                          color: Color(0xAA000000),
-                          size: 50.0,
-                        ),
-                        onPressed: () {
-                          print('IconButton pressed ...');
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
-                child: TextFormField(
-                  controller: _model.yourNameTextController,
-                  focusNode: _model.yourNameFocusNode,
-                  textCapitalization: TextCapitalization.words,
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    labelText: 'Your Name',
-                    labelStyle:
-                        FlutterFlowTheme.of(context).labelMedium.override(
-                              font: GoogleFonts.karla(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                    hintStyle:
-                        FlutterFlowTheme.of(context).labelMedium.override(
-                              font: GoogleFonts.karla(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).alternate,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).primary,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).error,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).error,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                    contentPadding:
-                        EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 0.0, 24.0),
-                  ),
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.karla(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                  validator: _model.yourNameTextControllerValidator
-                      .asValidator(context),
-                  inputFormatters: [
-                    if (!isAndroid && !isiOS)
-                      TextInputFormatter.withFunction((oldValue, newValue) {
-                        return TextEditingValue(
-                          selection: newValue.selection,
-                          text: newValue.text
-                              .toCapitalization(TextCapitalization.words),
-                        );
-                      }),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
-                child: TextFormField(
-                  controller: _model.emailAddressTextController,
-                  focusNode: _model.emailAddressFocusNode,
-                  textCapitalization: TextCapitalization.words,
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    labelStyle:
-                        FlutterFlowTheme.of(context).labelMedium.override(
-                              font: GoogleFonts.karla(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                    hintStyle:
-                        FlutterFlowTheme.of(context).labelMedium.override(
-                              font: GoogleFonts.karla(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).alternate,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).primary,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).error,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).error,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                    contentPadding:
-                        EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 0.0, 24.0),
-                  ),
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.karla(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                  validator: _model.emailAddressTextControllerValidator
-                      .asValidator(context),
-                  inputFormatters: [
-                    if (!isAndroid && !isiOS)
-                      TextInputFormatter.withFunction((oldValue, newValue) {
-                        return TextEditingValue(
-                          selection: newValue.selection,
-                          text: newValue.text
-                              .toCapitalization(TextCapitalization.words),
-                        );
-                      }),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
-                child: TextFormField(
-                  controller: _model.passwordTextController1,
-                  focusNode: _model.passwordFocusNode1,
-                  textCapitalization: TextCapitalization.words,
-                  obscureText: !_model.passwordVisibility1,
-                  decoration: InputDecoration(
-                    isDense: false,
-                    labelText: 'password',
-                    labelStyle: FlutterFlowTheme.of(context)
-                        .bodyMedium
-                        .override(
-                          font: GoogleFonts.karla(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                    hintStyle:
-                        FlutterFlowTheme.of(context).labelMedium.override(
-                              font: GoogleFonts.karla(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).alternate,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).primary,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).error,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).error,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                    contentPadding:
-                        EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 0.0, 24.0),
-                    suffixIcon: InkWell(
-                      onTap: () => safeSetState(
-                        () => _model.passwordVisibility1 =
-                            !_model.passwordVisibility1,
-                      ),
-                      focusNode: FocusNode(skipTraversal: true),
-                      child: Icon(
-                        _model.passwordVisibility1
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                        color: Color(0xFF757575),
-                        size: 22.0,
-                      ),
-                    ),
-                  ),
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.karla(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                  keyboardType: TextInputType.visiblePassword,
-                  validator: _model.passwordTextController1Validator
-                      .asValidator(context),
-                  inputFormatters: [
-                    if (!isAndroid && !isiOS)
-                      TextInputFormatter.withFunction((oldValue, newValue) {
-                        return TextEditingValue(
-                          selection: newValue.selection,
-                          text: newValue.text
-                              .toCapitalization(TextCapitalization.words),
-                        );
-                      }),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
-                child: TextFormField(
-                  controller: _model.passwordTextController2,
-                  focusNode: _model.passwordFocusNode2,
-                  textCapitalization: TextCapitalization.words,
-                  obscureText: !_model.passwordVisibility2,
-                  decoration: InputDecoration(
-                    labelText: 'passwordConfirm',
-                    labelStyle: FlutterFlowTheme.of(context)
-                        .bodyMedium
-                        .override(
-                          font: GoogleFonts.karla(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                    hintStyle:
-                        FlutterFlowTheme.of(context).labelMedium.override(
-                              font: GoogleFonts.karla(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).alternate,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).primary,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).error,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).error,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                    contentPadding:
-                        EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 0.0, 24.0),
-                    suffixIcon: InkWell(
-                      onTap: () => safeSetState(
-                        () => _model.passwordVisibility2 =
-                            !_model.passwordVisibility2,
-                      ),
-                      focusNode: FocusNode(skipTraversal: true),
-                      child: Icon(
-                        _model.passwordVisibility2
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                        color: Color(0xFF757575),
-                        size: 22.0,
-                      ),
-                    ),
-                  ),
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.karla(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                  keyboardType: TextInputType.visiblePassword,
-                  validator: _model.passwordTextController2Validator
-                      .asValidator(context),
-                  inputFormatters: [
-                    if (!isAndroid && !isiOS)
-                      TextInputFormatter.withFunction((oldValue, newValue) {
-                        return TextEditingValue(
-                          selection: newValue.selection,
-                          text: newValue.text
-                              .toCapitalization(TextCapitalization.words),
-                        );
-                      }),
-                  ],
-                ),
-              ),
-              Align(
-                alignment: AlignmentDirectional(0.0, 0.05),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
-                  child: FFButtonWidget(
-                    onPressed: () {
-                      print('Button pressed ...');
-                    },
-                    text: 'Save Changes',
-                    options: FFButtonOptions(
-                      width: 270.0,
-                      height: 50.0,
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleMedium.override(
-                                font: GoogleFonts.karla(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleMedium
-                                    .fontStyle,
-                              ),
-                      elevation: 2.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                  ),
-                ),
-              ),
-            ],
           ),
         ),
       ),
